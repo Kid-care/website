@@ -3,7 +3,7 @@ import Logo from "../assets/LOGO.svg";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { registerAsync } from "../store/slices/userSlice.js";
+import { registerAsync } from "../store/slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const Register1 = () => {

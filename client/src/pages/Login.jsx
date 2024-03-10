@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import loginImg from "../assets/Login.svg";
 import Logo from "../assets/LOGO.svg";
-import { loginAsync } from "../store/slices/userSlice.js";
+import { loginAsync } from "../store/slices/authSlice.js";
 import openEye from "../assets/openEye.svg";
 import closeEye from "../assets/closeEye.svg";
 
@@ -15,11 +15,10 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [backendError, setBackendError] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
+  const [shouldSubmit, setShouldSubmit] = useState(true);
 
   const handleTogglePassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -68,28 +67,47 @@ const Login = () => {
     validateForm();
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (shouldSubmit) {
+        const message = "تأكيد مغادرة الصفحة؟";
+        event.returnValue = message;
+        return message;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [shouldSubmit]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
       try {
-        setBackendError(null);
         const response = await dispatch(loginAsync({ email, password }));
-
         if (response.payload && response.payload.status === false) {
           console.log(response.payload.message);
-          setBackendError(response.payload.message || "المستخدم غير مسجل");
           toast.error(response.payload.message || "المستخدم غير مسجل");
         } else {
           console.log("تم التسجيل الدخول بنجاح");
           console.log("Token:", response.payload.token);
           localStorage.setItem("token", response.payload.token);
+          setShouldSubmit(false);
+
           navigate("/");
         }
       } catch (error) {
         console.error("Form validation failed.", error);
-        setBackendError(error.message || "حدث خطأ أثناء تسجيل الدخول");
         toast.error(error.message || "حدث خطأ أثناء تسجيل الدخول");
+        setEmail("");
+        setPassword("");
+        setFormErrors({});
+        setShowPassword(false);
+        setIsPasswordFocused(false);
       }
     }
   };
@@ -133,7 +151,7 @@ const Login = () => {
                   dir="rtl"
                   htmlFor="email"
                   className={`absolute right-2 text-[#132F2BCC] bg-slate-50 m-2 transition-all duration-200 px-2 ${
-                    isFocused || email
+                    isPasswordFocused || email
                       ? "text-lg -translate-y-6 -translate-x-4 text-[#132F2BCC]"
                       : "text-base"
                   }`}>
@@ -187,11 +205,11 @@ const Login = () => {
                 dir="rtl"
                 htmlFor="password"
                 className={`absolute right-2 text-[#132F2BCC] bg-slate-50 m-2 transition-all duration-200 px-2 ${
-                  isFocused || password
+                  isPasswordFocused || password
                     ? "text-lg -translate-y-6 -translate-x-4 text-[#132F2BCC]"
                     : "text-base"
                 }`}>
-                الرقم السري
+                كلمة المرور
               </label>
             </div>
 
