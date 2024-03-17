@@ -35,6 +35,7 @@ const Login = () => {
   const validateForm = () => {
     let isValid = true;
     const errors = {};
+  
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email) || email.trim() === "") {
@@ -116,7 +117,7 @@ const Login = () => {
     <>
       <section className="grid grid-flow-row grid-cols-2">
         <div className="bg-[#28CC9E4D] min-h-screen">
-          <img src={loginImg} alt="Register" className="my-48 mx-10" />
+          <img src={loginImg} alt="Login" className="my-48 mx-10" />
         </div>
 
         <div className="flex flex-nowrap flex-col flex-1">
