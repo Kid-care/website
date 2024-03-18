@@ -16,13 +16,13 @@ const Register1 = () => {
     fatherName: "",
     motherName: "",
   });
-   const [inputTouched, setInputTouched] = useState({
-     userName: false,
-     email: false,
-     phoneNumber: false,
-     fatherName: false,
-     motherName: false,
-   });
+  const [inputTouched, setInputTouched] = useState({
+    userName: false,
+    email: false,
+    phoneNumber: false,
+    fatherName: false,
+    motherName: false,
+  });
 
   const validateForm = () => {
     let isValid = true;
@@ -30,6 +30,10 @@ const Register1 = () => {
 
     if (!userData.userName.trim() || userData.userName.length < 3) {
       errors.userName = "الرجاء إدخال اسم المستخدم(على الأقل 3 أحرف)";
+      isValid = false;
+    } else if (!/^[\u0621-\u064Aa-zA-Z\s]+$/.test(userData.userName)) {
+      errors.userName =
+        "الرجاء ادخال اسم المستخدم يحتوي عل احرف عربيه او انجليزيه فقط";
       isValid = false;
     } else {
       delete errors.userName;
@@ -52,7 +56,10 @@ const Register1 = () => {
 
     if (!userData.fatherName.trim()) {
       errors.fatherName = "الرجاء إدخال اسم الاب (على الأقل 3 أحرف)";
-    } else if (!/^[a-zA-Z\s]+$/.test(userData.fatherName)) {
+    } else if (
+      !/^[a-zA-Z\s]+$/.test(userData.fatherName) &&
+      !/^[ء-ي\s]+$/.test(userData.fatherName)
+    ) {
       errors.fatherName = "يجب أن يحتوي اسم الأب على أحرف فقط";
     } else {
       delete errors.fatherName;
@@ -60,7 +67,10 @@ const Register1 = () => {
 
     if (!userData.motherName.trim() || userData.motherName.length < 3) {
       errors.motherName = "الرجاء إدخال اسم الام (على الأقل 3 أحرف)";
-    } else if (!/^[a-zA-Z\s]+$/.test(userData.motherName)) {
+    } else if (
+      !/^[a-zA-Z\s]+$/.test(userData.motherName) &&
+      !/^[ء-ي\s]+$/.test(userData.motherName)
+    ) {
       errors.motherName = "يجب أن يحتوي اسم الأم على أحرف فقط";
     } else {
       delete errors.motherName;
@@ -72,17 +82,17 @@ const Register1 = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
-       setInputTouched({ ...inputTouched, [name]: true });
+    setInputTouched({ ...inputTouched, [name]: true });
   };
 
   const handleNext = () => {
-      setInputTouched({
-        userName: true,
-        email: true,
-        phoneNumber: true,
-        fatherName: true,
-        motherName: true,
-      });
+    setInputTouched({
+      userName: true,
+      email: true,
+      phoneNumber: true,
+      fatherName: true,
+      motherName: true,
+    });
     if (validateForm()) {
       navigate("/Register2", { state: userData });
     }
@@ -316,7 +326,6 @@ const Register1 = () => {
                   التالي
                 </button>
               </div>
-              
             </form>
           </div>
         </div>

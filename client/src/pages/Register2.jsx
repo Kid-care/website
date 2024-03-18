@@ -131,7 +131,7 @@ const Register2 = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-      setInputTouched({
+    setInputTouched({
       NationalID: false,
       bloodType: false,
       password: false,
@@ -142,18 +142,24 @@ const Register2 = () => {
     if (!validateForm()) return;
     const { day, month, year, ...rest } = userData;
     const birthDate = `${userData.day}/${userData.month}/${userData.year}`;
-    try {
-      const response = await dispatch(registerAsync({ ...rest, birthDate }));
-      if (response.payload && response.payload.status === false) {
-        toast.error(response.payload.message || "هذا المستخدم مسجل بالفعل");
-      } else {
-        localStorage.setItem("token", response.payload.token);
-        navigate("/login");
-      }
-    } catch (error) {
-      console.error("فشل التسجيل:", error.message);
-      toast.error(error.message || "حدث خطأ أثناء تسجيل الدخول");
-    }
+     try {
+       const response = await dispatch(registerAsync({ ...rest, birthDate }));
+       if (response.payload && response.payload.status === false) {
+         if (response.payload.error === "user_already_registered") {
+           toast.error("هذا المستخدم مسجل بالفعل");
+         } else {
+           toast.error(
+             response.payload.message || "حدث خطأ أثناء إنشاء الحساب"
+           );
+         }
+       } else {
+         localStorage.setItem("token", response.payload.token);
+         navigate("/login");
+       }
+     } catch (error) {
+       console.error("فشل انشاء الحساب:", error.message);
+       toast.error("حدث خطأ أثناء إنشاء الحساب");
+     }
   };
 
   return (
