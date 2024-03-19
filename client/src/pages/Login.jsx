@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -16,7 +16,6 @@ const Login = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [shouldSubmit, setShouldSubmit] = useState(true);
   const [inputFocus, setInputFocus] = useState({});
 
   const [userData, setUserData] = useState({
@@ -72,21 +71,7 @@ const Login = () => {
 
 
 
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      if (shouldSubmit) {
-        const message = "تأكيد مغادرة الصفحة؟";
-        event.returnValue = message;
-        return message;
-      }
-    };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [shouldSubmit]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

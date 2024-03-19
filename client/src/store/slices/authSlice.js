@@ -17,6 +17,14 @@ export const registerAsync = createAsyncThunk(
   }
 );
 
+export const forgotPasswordAsync = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email) => {
+    const response = await authService.forgotPassword(email);
+    return response;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -59,6 +67,23 @@ const authSlice = createSlice({
         } else {
           state.error = "An error occurred";
         }
+      })
+      .addCase(forgotPasswordAsync.pending, (state) => {
+        state.loading = 'pending';
+        state.error = null;
+      })
+      .addCase(forgotPasswordAsync.fulfilled, (state, action) => {
+        state.loading = 'idle';
+        state.user = action.payload;
+      })
+      .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        state.loading = 'idle';
+        if (action.error) {
+          state.error = action.error.message || 'An error occurred';
+        } else {
+          state.error = 'An error occurred';
+        }
+        
       });
   },
 });

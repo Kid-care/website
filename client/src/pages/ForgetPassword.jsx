@@ -1,8 +1,13 @@
 import { useState } from "react";
 import ForgetPassword from "../assets/Forgot password-rafiki 1.svg";
 import Logo from "../assets/LOGO.svg";
+import { useDispatch } from "react-redux";
+import { forgotPasswordAsync } from "../store/slices/authSlice.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
   const [inputFocus, setInputFocus] = useState({});
 
@@ -50,6 +55,24 @@ const Login = () => {
       email: false,
     });
     if (!validateForm()) return;
+     try {
+       const response = await dispatch(forgotPasswordAsync(userData.email));
+
+       if (response.payload && response.payload.message) {
+         toast(response.payload.message);
+       } else if (
+         response.error &&
+         response.error.response &&
+         response.error.response.status === 404
+       ) {
+         toast("المستخدم غير موجود");
+       } else {
+         toast("تم إرسال طلب تذكير كلمة المرور إلى بريدك الإلكتروني");
+       }
+     } catch (error) {
+       console.error("Error:", error.message);
+       toast(error.message || "حدث خطأ أثناء معالجة الطلب");
+     }
   };
 
   return (

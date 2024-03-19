@@ -17,6 +17,13 @@ const authService = {
     );
     return response;
   },
+  forgotPassword: async (email) => {
+    const response = await axios.post(
+      `${API_BASE_URL}/password/forgot-password`,
+      { email }
+    );
+    return response.data;
+  },
 };
 
 export default authService;
