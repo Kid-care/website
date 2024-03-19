@@ -24,6 +24,15 @@ const authService = {
     );
     return response.data;
   },
+  resetPassword: async (password) => {
+  
+      const response = await axios.post(
+        `${API_BASE_URL}`,
+        { password }
+      );
+      return response.data;
+  
+  },
 };
 
 export default authService;

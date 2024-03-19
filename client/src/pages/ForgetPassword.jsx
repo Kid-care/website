@@ -1,16 +1,15 @@
 import { useState } from "react";
+import Modal from "../components/Modal.jsx"; // Import your Modal component here
 import ForgetPassword from "../assets/Forgot password-rafiki 1.svg";
 import Logo from "../assets/LOGO.svg";
 import { useDispatch } from "react-redux";
 import { forgotPasswordAsync } from "../store/slices/authSlice.js";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import imageUrl from "../assets/New message-pana 2 .svg";
 
-const Login = () => {
+const ForgotPassword = () => {
   const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
   const [inputFocus, setInputFocus] = useState({});
-
   const [userData, setUserData] = useState({
     email: "",
   });
@@ -18,6 +17,18 @@ const Login = () => {
   const [inputTouched, setInputTouched] = useState({
     email: false,
   });
+
+  const [modalContent, setModalContent] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = (content) => {
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,24 +66,32 @@ const Login = () => {
       email: false,
     });
     if (!validateForm()) return;
-     try {
-       const response = await dispatch(forgotPasswordAsync(userData.email));
+    try {
+      const response = await dispatch(forgotPasswordAsync(userData.email));
 
-       if (response.payload && response.payload.message) {
-         toast(response.payload.message);
-       } else if (
-         response.error &&
-         response.error.response &&
-         response.error.response.status === 404
-       ) {
-         toast("المستخدم غير موجود");
-       } else {
-         toast("تم إرسال طلب تذكير كلمة المرور إلى بريدك الإلكتروني");
-       }
-     } catch (error) {
-       console.error("Error:", error.message);
-       toast(error.message || "حدث خطأ أثناء معالجة الطلب");
-     }
+      if (response.payload && response.payload.message) {
+        openModal(response.payload.message);
+        // console.log(response.payload.message);
+      } else if (
+        response.error &&
+        response.error.response &&
+        response.error.response.status === 404
+      ) {
+        openModal(response.payload.message || "المستخدم غير موجود");
+      } else if (
+        response.error &&
+        response.error.response &&
+        response.error.response.data &&
+        response.error.response.data.errors
+      ) {
+        const errorMessages = response.error.response.data.errors;
+        openModal(errorMessages.join("\n"));
+      } else {
+        openModal(response.payload?.message || "تحقق من بريدك الالكتروني");
+      }
+    } catch (error) {
+      openModal(error.message || "حدث خطأ أثناء معالجة الطلب");
+    }
   };
 
   return (
@@ -151,8 +170,16 @@ const Login = () => {
           </div>
         </div>
       </section>
+
+      {showModal && (
+        <Modal closeModal={closeModal} imageUrl={imageUrl}>
+          <>
+            <p className="text-center">{modalContent}</p>
+          </>
+        </Modal>
+      )}
     </>
   );
 };
 
-export default Login;
+export default ForgotPassword;

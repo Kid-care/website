@@ -21,7 +21,15 @@ export const forgotPasswordAsync = createAsyncThunk(
   "auth/forgotPassword",
   async (email) => {
     const response = await authService.forgotPassword(email);
-    return response;
+    return response.data;
+  }
+);
+
+export const resetPasswordAsync = createAsyncThunk(
+  "auth/resetPassword",
+  async (password) => {
+    const response = await authService.resetPassword(password);
+    return response.data;
   }
 );
 
@@ -77,12 +85,31 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        console.log(action.error.message);
         state.loading = 'idle';
         if (action.error) {
           state.error = action.error.message || 'An error occurred';
         } else {
           state.error = 'An error occurred';
         }
+        
+      })
+     .addCase(resetPasswordAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(resetPasswordAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.user = action.payload;
+      })
+      .addCase(resetPasswordAsync.rejected, (state, action) => {
+         console.log(action.error.message);
+         state.loading = "idle";
+         if (action.error) {
+           state.error = action.error.message || "An error occurred";
+         } else {
+           state.error = "An error occurred";
+         }
         
       });
   },
