@@ -24,8 +24,14 @@ const authService = {
     );
     return response;
   },
-  resetPassword: async (password) => {
-    const response = await axios.post(`${API_BASE_URL}`, { password });
+  resetPassword: async (token,password) => {
+    const response = await axios.post(
+      `${API_BASE_URL}
+  /password/reset-password/${token}`,
+    
+    
+      { password }
+    );
     return response;
   },
 };

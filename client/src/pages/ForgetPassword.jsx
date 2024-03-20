@@ -5,9 +5,12 @@ import Logo from "../assets/LOGO.svg";
 import { useDispatch } from "react-redux";
 import { forgotPasswordAsync } from "../store/slices/authSlice.js";
 import imageUrl from "../assets/New message-pana 2 .svg";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [formErrors, setFormErrors] = useState({});
   const [inputFocus, setInputFocus] = useState({});
   const [userData, setUserData] = useState({
@@ -69,9 +72,14 @@ const ForgotPassword = () => {
     try {
       const response = await dispatch(forgotPasswordAsync(userData.email));
 
-      if (response.payload && response.payload.message) {
+      if (
+        response.payload &&
+        response.payload.message === "تم إرسال الرابط بنجاح"
+      ) {
         openModal(response.payload.message);
-        // console.log(response.payload.message);
+        setTimeout(() => {
+          navigate("/ResetPassword");
+        }, 3000);
       } else if (
         response.error &&
         response.error.response &&
@@ -88,7 +96,7 @@ const ForgotPassword = () => {
         openModal(errorMessages.join("\n"));
       } else {
         console.log(response);
-        openModal(response.error.message || "تحقق من بريدك الالكتروني");
+        openModal(response.payload.message || "تحقق من بريدك الالكتروني");
       }
     } catch (error) {
       openModal(error.message || "حدث خطأ أثناء معالجة الطلب");
