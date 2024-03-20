@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { registerAsync } from "../store/slices/authSlice";
-import { toast } from "react-toastify";
 import Register2Img from "../assets/Blood donation-amico 2.svg";
 import Logo from "../assets/LOGO.svg";
 import Oblus from "../assets/O+.svg";
@@ -23,6 +22,8 @@ import colorfulBblus from "../assets/colorfulB+.svg";
 import colorfulBminus from "../assets/colorfulB-.svg";
 import openEye from "../assets/openEye.svg";
 import closeEye from "../assets/closeEye.svg";
+import Modal from "../components/Modal.jsx";
+import imageUrl from "../assets/errors.svg";
 
 const Register2 = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,18 @@ const Register2 = () => {
       navigate("/Register1");
     }
   }, [location.state, navigate]);
+
+  const [modalContent, setModalContent] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = (content) => {
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const [inputTouched, setInputTouched] = useState({
     NationalID: false,
@@ -142,24 +155,29 @@ const Register2 = () => {
     if (!validateForm()) return;
     const { day, month, year, ...rest } = userData;
     const birthDate = `${userData.day}/${userData.month}/${userData.year}`;
-     try {
-       const response = await dispatch(registerAsync({ ...rest, birthDate }));
-       if (response.payload && response.payload.status === false) {
-         if (response.payload.error === "user_already_registered") {
-           toast.error("هذا المستخدم مسجل بالفعل");
-         } else {
-           toast.error(
-             response.payload.message || "حدث خطأ أثناء إنشاء الحساب"
-           );
-         }
-       } else {
-         localStorage.setItem("token", response.payload.token);
-         navigate("/login");
-       }
-     } catch (error) {
-       console.error("فشل انشاء الحساب:", error.message);
-       toast.error("حدث خطأ أثناء إنشاء الحساب");
-     }
+    try {
+      const response = await dispatch(registerAsync({ ...rest, birthDate }));
+
+      if (response.payload && response.payload.status === true) {
+        localStorage.setItem("token", response.payload.token);
+        navigate("/Login");
+      } else if (response.payload && response.payload.status === false) {
+        openModal(response.payload.message || "فشل تسجيل الدخول");
+      } else if (
+        response.error &&
+        response.error.response &&
+        response.error.response.data &&
+        response.error.response.data.errors
+      ) {
+        const errorMessages = response.error.response.data.errors;
+        openModal(errorMessages.join("\n"));
+      } else {
+        console.log(response);
+        openModal(response.payload.message || "حدث خطأ أثناء إنشاء الحساب");
+      }
+    } catch (error) {
+      openModal(error.message || "حدث خطأ أثناء إنشاء الحساب");
+    }
   };
 
   return (
@@ -496,6 +514,13 @@ const Register2 = () => {
           </div>
         </div>
       </section>
+      {showModal && (
+        <Modal closeModal={closeModal} imageUrl={imageUrl}>
+          <>
+            <p className="text-center">{modalContent}</p>
+          </>
+        </Modal>
+      )}
     </>
   );
 };

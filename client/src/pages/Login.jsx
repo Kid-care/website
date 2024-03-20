@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import loginImg from "../assets/Login.svg";
 import Logo from "../assets/LOGO.svg";
 import { loginAsync } from "../store/slices/authSlice.js";
 import openEye from "../assets/openEye.svg";
 import closeEye from "../assets/closeEye.svg";
+import Modal from "../components/Modal.jsx";
+import imageUrl from "../assets/errors.svg";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
 
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -22,21 +21,31 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [modalContent, setModalContent] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
+  const openModal = (content) => {
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
   const [inputTouched, setInputTouched] = useState({
     email: false,
     password: false,
   });
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setUserData({ ...userData, [name]: value });
-      setInputTouched({ ...inputTouched, [name]: true });
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+    setInputTouched({ ...inputTouched, [name]: true });
+  };
 
-    const handleTogglePassword = () => {
-      setShowPassword(!showPassword);
-    };
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleFocus = (name) => {
     setInputFocus({ ...inputFocus, [name]: true });
@@ -69,36 +78,38 @@ const Login = () => {
     return isValid;
   };
 
-
-
-
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setInputTouched({
       email: false,
       password: false,
     });
-    if (!validateForm()) return
-     try {
-       const response = await dispatch(loginAsync(userData));
+    if (!validateForm()) return;
 
-       if (response.payload && response.payload.error) {
-         toast.error(response.payload.error.message || "فشل تسجيل الدخول");
-       } else if (response.payload && response.payload.token) {
-         localStorage.setItem("token", response.payload.token);
-         navigate("/");
-       } else {
-        toast.error(
-          response.payload.message || "حدث خطأ أثناء تسجيل الدخول"
-        );
-       }
-     } catch (error) {
-       console.error("فشل تسجيل الدخول:", error);
-        toast.error(error.message || "حدث خطأ أثناء تسجيل الدخول");
-     }
+    try {
+      const response = await dispatch(loginAsync(userData));
+
+      if (response.payload && response.payload.status === true) {
+        localStorage.setItem("token", response.payload.token);
+        navigate("/");
+      } else if (response.payload && response.payload.status === false) {
+        openModal(response.payload.message || "فشل تسجيل الدخول");
+      } else if (
+        response.error &&
+        response.error.response &&
+        response.error.response.data &&
+        response.error.response.data.errors
+      ) {
+        const errorMessages = response.error.response.data.errors;
+        openModal(errorMessages.join("\n"));
+      } else {
+        console.log(response);
+        openModal(response.error.message || "حدث خطأ أثناء تسجيل الدخول");
+      }
+    } catch (error) {
+      openModal(error.message || "حدث خطأ أثناء تسجيل الدخول");
+    }
   };
-  
 
   return (
     <>
@@ -248,6 +259,13 @@ const Login = () => {
           </div>
         </div>
       </section>
+      {showModal && (
+        <Modal closeModal={closeModal} imageUrl={imageUrl}>
+          <>
+            <p className="text-center">{modalContent}</p>
+          </>
+        </Modal>
+      )}
     </>
   );
 };

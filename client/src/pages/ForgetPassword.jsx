@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Modal from "../components/Modal.jsx"; // Import your Modal component here
+import Modal from "../components/Modal.jsx";
 import ForgetPassword from "../assets/Forgot password-rafiki 1.svg";
 import Logo from "../assets/LOGO.svg";
 import { useDispatch } from "react-redux";
@@ -87,7 +87,8 @@ const ForgotPassword = () => {
         const errorMessages = response.error.response.data.errors;
         openModal(errorMessages.join("\n"));
       } else {
-        openModal(response.payload?.message || "تحقق من بريدك الالكتروني");
+        console.log(response);
+        openModal(response.error.message || "تحقق من بريدك الالكتروني");
       }
     } catch (error) {
       openModal(error.message || "حدث خطأ أثناء معالجة الطلب");
@@ -114,7 +115,7 @@ const ForgotPassword = () => {
           <div className=" flex flex-col justify-center items-center h-full">
             <form
               className="absolute w-[400px]  mr-9 flex flex-col gap-y-9 "
-              method="POST">
+              onSubmit={handleForgetPassword}>
               <h1
                 className="font-bold text-2xl  text-[#132F2B] tracking-wide"
                 dir="rtl">
@@ -160,9 +161,8 @@ const ForgotPassword = () => {
               <div className="">
                 <button
                   className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-full rounded-2xl text-[#132F2B] tracking-wider text-xl"
-                  type="button"
-                  dir="rtl"
-                  onClick={handleForgetPassword}>
+                  type="submit"
+                  dir="rtl">
                   التالي
                 </button>
               </div>

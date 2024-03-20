@@ -22,16 +22,11 @@ const authService = {
       `${API_BASE_URL}/password/forgot-password`,
       { email }
     );
-    return response.data;
+    return response;
   },
   resetPassword: async (password) => {
-  
-      const response = await axios.post(
-        `${API_BASE_URL}`,
-        { password }
-      );
-      return response.data;
-  
+    const response = await axios.post(`${API_BASE_URL}`, { password });
+    return response;
   },
 };
 
