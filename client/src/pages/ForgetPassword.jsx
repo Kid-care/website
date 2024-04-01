@@ -4,12 +4,12 @@ import ForgetPassword from "../assets/Forgot password-rafiki 1.svg";
 import Logo from "../assets/LOGO.svg";
 import { useDispatch } from "react-redux";
 import { forgotPasswordAsync } from "../store/slices/authSlice.js";
-import imageUrl from "../assets/New message-pana 2 .svg";
-import { useNavigate } from "react-router-dom";
+import imageUrl from "../assets/message.svg";
+// import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [formErrors, setFormErrors] = useState({});
   const [inputFocus, setInputFocus] = useState({});
@@ -77,9 +77,9 @@ const ForgotPassword = () => {
         response.payload.message === "تم إرسال الرابط بنجاح"
       ) {
         openModal(response.payload.message);
-        setTimeout(() => {
-          navigate("/ResetPassword");
-        }, 3000);
+        // setTimeout(() => {
+        //   navigate("/ResetPassword");
+        // }, 3000);
       } else if (
         response.error &&
         response.error.response &&

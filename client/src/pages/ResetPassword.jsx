@@ -8,10 +8,12 @@ import Logo from "../assets/LOGO.svg";
 import { resetPasswordAsync } from "../store/slices/authSlice.js";
 import openEye from "../assets/openEye.svg";
 import closeEye from "../assets/closeEye.svg";
+import { useParams } from "react-router-dom";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user_id, token } = useParams();
 
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -74,7 +76,9 @@ const ResetPassword = () => {
     });
     if (!validateForm()) return;
     try {
-      const response = await dispatch(resetPasswordAsync(userData.password));
+      const response = await dispatch(
+        resetPasswordAsync(user_id, token, userData.password)
+      );
 
       if (response.payload && response.payload.message) {
         toast.success(response.payload.message);
