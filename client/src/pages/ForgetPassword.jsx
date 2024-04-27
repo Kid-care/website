@@ -80,13 +80,18 @@ const ForgotPassword = () => {
         // setTimeout(() => {
         //   navigate("/ResetPassword");
         // }, 3000);
-      } else if (
+      }
+      
+      else if (
         response.error &&
         response.error.response &&
         response.error.response.status === 404
       ) {
         openModal(response.payload.message || "المستخدم غير موجود");
-      } else if (
+      }
+      
+      
+      else if (
         response.error &&
         response.error.response &&
         response.error.response.data &&
@@ -94,7 +99,9 @@ const ForgotPassword = () => {
       ) {
         const errorMessages = response.error.response.data.errors;
         openModal(errorMessages.join("\n"));
-      } else {
+      }
+      
+      else {
         console.log(response);
         openModal(response.payload.message || "تحقق من بريدك الالكتروني");
       }

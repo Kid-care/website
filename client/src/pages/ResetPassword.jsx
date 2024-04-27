@@ -1,23 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Modal from "../components/Modal.jsx";
 import resetPassword from "../assets/My password-pana 2.svg";
 import Logo from "../assets/LOGO.svg";
 import { resetPasswordAsync } from "../store/slices/authSlice.js";
 import openEye from "../assets/openEye.svg";
 import closeEye from "../assets/closeEye.svg";
 import { useParams } from "react-router-dom";
+import imageUrl from "../assets/errors.svg";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user_id, token } = useParams();
+  const { token } = useParams();
 
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [inputFocus, setInputFocus] = useState({});
+  const [modalContent, setModalContent] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = (content) => {
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const [userData, setUserData] = useState({
     password: "",
@@ -77,20 +88,32 @@ const ResetPassword = () => {
     if (!validateForm()) return;
     try {
       const response = await dispatch(
-        resetPasswordAsync(user_id, token, userData.password)
+        resetPasswordAsync({ token, password: userData.password })
       );
 
-      if (response.payload && response.payload.message) {
-        toast.success(response.payload.message);
-        navigate("/login");
+      if (
+        response.payload &&
+        response.payload.message === "تم إرسال الرابط بنجاح"
+      ) {
+        localStorage.setItem("token", response.payload.token);
+
+        openModal(response.payload.message);
+        setTimeout(() => {
+          navigate("/Login");
+        }, 3000);
+      } else if (
+        response.error &&
+        response.error.response &&
+        response.error.response.status === 404
+      ) {
+        openModal(response.payload.message || "فشل تغيير كلمه المرور");
       } else {
-        toast.error(
-          response.payload.error || "حدث خطأ أثناء إعادة تعيين كلمة المرور"
-        );
+        console.log(response);
+        openModal(response.payload.message || "تم تغيير كلمه المرور بنجاح");
       }
     } catch (error) {
       console.error("فشل إعادة تعيين كلمة المرور:", error);
-      toast.error(error.message || "حدث خطأ أثناء إعادة تعيين كلمة المرور");
+      openModal(error.message || "حدث خطأ أثناء إعادة تعيين كلمة المرور");
     }
   };
 
@@ -255,6 +278,13 @@ const ResetPassword = () => {
           </div>
         </div>
       </section>
+      {showModal && (
+        <Modal closeModal={closeModal} imageUrl={imageUrl}>
+          <>
+            <p className="text-center">{modalContent}</p>
+          </>
+        </Modal>
+      )}
     </>
   );
 };

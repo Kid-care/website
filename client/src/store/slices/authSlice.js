@@ -1,3 +1,4 @@
+// authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../../config/config";
 
@@ -6,6 +7,7 @@ export const loginAsync = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
+      localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -39,13 +41,9 @@ export const forgotPasswordAsync = createAsyncThunk(
 
 export const resetPasswordAsync = createAsyncThunk(
   "auth/resetPassword",
-  async ({ user_id, token, password }, { rejectWithValue }) => {
+  async ({ token, password }, { rejectWithValue }) => {
     try {
-      const response = await authService.resetPassword(
-        user_id,
-        token,
-        password
-      );
+      const response = await authService.resetPassword(token, password);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -53,15 +51,56 @@ export const resetPasswordAsync = createAsyncThunk(
   }
 );
 
+export const sendDataToBackendAsync = createAsyncThunk(
+  "auth/sendDataToBackend",
+  async ({ token, data }) => {
+    try {
+      const response = await authService.sendDataFromBrofileToBackend(
+        token,
+        data
+      );
+      return response.user;
+    } catch (error) {
+      throw error.response.data;
+    }
+  }
+);
+
+export const getDataFromBackendAsync = createAsyncThunk(
+  "auth/getDataFromBackend",
+  async (_, { getState }) => {
+    try {
+      const token = getState().auth.token;
+      const user = getState().auth.user;
+
+      const response = await authService.getDataFromBackendToBrofile(
+        token,
+        user
+      );
+
+      return response.user;
+    } catch (error) {
+      throw error.message;
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
+    token: localStorage.getItem("token") || "",
+    user: {},
     loading: "idle",
     error: null,
   },
-  reducers: {},
-
+  reducers: {
+    logout: (state) => {
+      state.token = "";
+      state.user = {};
+      state.loading = "idle";
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginAsync.pending, (state) => {
@@ -129,8 +168,44 @@ const authSlice = createSlice({
         } else {
           state.error = "An error occurred";
         }
+      })
+      .addCase(sendDataToBackendAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(sendDataToBackendAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        console.log(action.payload);
+      })
+      .addCase(sendDataToBackendAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+      .addCase(getDataFromBackendAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(getDataFromBackendAsync.fulfilled, (state, action) => {
+        state.user = action.payload;
+
+        state.loading = "idle";
+      })
+      .addCase(getDataFromBackendAsync.rejected, (state, action) => {
+        console.log(action.error.message);
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
       });
   },
 });
+
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

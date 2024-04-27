@@ -9,7 +9,7 @@ import closeEye from "../assets/closeEye.svg";
 import Modal from "../components/Modal.jsx";
 import imageUrl from "../assets/errors.svg";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -59,7 +59,8 @@ const Login = () => {
     let isValid = true;
     const errors = {};
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+;
     if (!emailRegex.test(userData.email) || userData.email.trim() === "") {
       errors.email = "الرجاء إدخال عنوان بريد إلكتروني صحيح";
       isValid = false;
@@ -91,6 +92,7 @@ const Login = () => {
 
       if (response.payload && response.payload.status === true) {
         localStorage.setItem("token", response.payload.token);
+        setIsAuthenticated(true);
         navigate("/");
       } else if (response.payload && response.payload.status === false) {
         openModal(response.payload.message || "فشل تسجيل الدخول");

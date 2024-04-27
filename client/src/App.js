@@ -1,13 +1,17 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
 import Login from "./pages/Login";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Register1 from "./pages/Register1";
 import Register2 from "./pages/Register2";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import MedicalHistory from "./pages/MedicalHistory";
 import Vaccinations from "./pages/Vaccinations";
 import FamilyRegistry from "./pages/FamilyRegistry";
@@ -20,41 +24,63 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("token") ? true : false // Check session storage
+  );
+
+  useEffect(() => {
+    // Check if token exists in local storage
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <AppLayout />
+        <AppLayout
+          isAuthenticated={isAuthenticated}
+          setIsAuthenticated={setIsAuthenticated}
+        />
       </BrowserRouter>
     </Provider>
   );
 }
 
-function AppLayout() {
+function AppLayout({ isAuthenticated, setIsAuthenticated }) {
   const location = useLocation();
-  const showNavbarFooter =
-    location.pathname === "/" ||
-    location.pathname === "/Profile" ||
-    location.pathname === "/MedicalHistory" ||
-    location.pathname === "/Vaccinations" ||
-    location.pathname === "/FamilyRegistry" ||
-    location.pathname === "/CompleteExamination" ||
-    location.pathname === "/AboutUs" ||
-    location.pathname === "/ChatBott";
-    console.log("Current location:", location.pathname);
-  console.log("Show Navbar/Footer:", showNavbarFooter);
 
+  const protectedRoutes = [
+    "/Profile",
+    "/MedicalHistory",
+    "/Vaccinations",
+    "/FamilyRegistry",
+    "/CompleteExamination",
+    "/AboutUs",
+    "/ChatBott",
+  ];
+
+  const requiresAuth = protectedRoutes.includes(location.pathname);
+
+  if (requiresAuth && !isAuthenticated) {
+    return <Navigate to="/Login" />;
+  }
 
   return (
     <>
-      {showNavbarFooter && <Navbar /> }
+      {(location.pathname === "/" || requiresAuth) }
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/Login" element={<Login />} />
+        <Route
+          path="/Login"
+          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+        />
         <Route path="/Register1" element={<Register1 />} />
         <Route path="/Register2" element={<Register2 />} />
         <Route path="/ForgetPassword" element={<ForgetPassword />} />
         <Route
-          path="/reset_password/:user_id/:token"
+          path="/password/reset-password/:token"
           element={<ResetPassword />}
         />
         <Route path="/Profile" element={<Profile />} />
@@ -66,7 +92,7 @@ function AppLayout() {
         <Route path="/ChatBot" element={<ChatBott />} />
         <Route path="*" element={<h1>page not found </h1>} />
       </Routes>
-      {showNavbarFooter && <Footer /> }
+      {(location.pathname === "/" || requiresAuth) }
     </>
   );
 }

@@ -1,11 +1,14 @@
-import React from 'react'
-
+import React from "react";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 const CompleteExamination = () => {
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <main>
+      <Navbar />
 
-export default CompleteExamination
+      <Footer />
+    </main>
+  );
+};
+
+export default CompleteExamination;

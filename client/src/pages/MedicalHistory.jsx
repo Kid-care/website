@@ -1,11 +1,14 @@
 import React from 'react'
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const MedicalHistory = () => {
   return (
-    <div>
-      ddddddd
-    </div>
-  )
+    <main>
+      <Navbar />
+      <Footer />
+    </main>
+  );
 }
 
-export default MedicalHistory
+export default MedicalHistory;
