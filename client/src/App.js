@@ -18,7 +18,7 @@ import FamilyRegistry from "./pages/FamilyRegistry";
 import CompleteExamination from "./pages/CompleteExamination";
 import Profile from "./pages/Profile";
 import AboutUs from "./pages/AboutUs.jsx";
-import ChatBott from "./components/ChatBott.jsx";
+import ChatBot from "./pages/ChatBot.jsx"
 import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
@@ -58,7 +58,7 @@ function AppLayout({ isAuthenticated, setIsAuthenticated }) {
     "/FamilyRegistry",
     "/CompleteExamination",
     "/AboutUs",
-    "/ChatBott",
+    "/ChatBot",
   ];
 
   const requiresAuth = protectedRoutes.includes(location.pathname);
@@ -89,7 +89,7 @@ function AppLayout({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/FamilyRegistry" element={<FamilyRegistry />} />
         <Route path="/CompleteExamination" element={<CompleteExamination />} />
         <Route path="/AboutUs" element={<AboutUs />} />
-        <Route path="/ChatBot" element={<ChatBott />} />
+        <Route path="/ChatBot" element={<ChatBot />} />
         <Route path="*" element={<h1>page not found </h1>} />
       </Routes>
       {(location.pathname === "/" || requiresAuth) }
