@@ -263,10 +263,10 @@ const Profile = () => {
                       <label htmlFor="bloodTypes" className="text-[#00000099]">
                         فصيلة الدم
                       </label>
-                      <div className="mt-5">
+                      <div className="mt-5 ">
                         <select
                           id="bloodTypes"
-                          className="w-[65px] h-[30px] bg-[#28CC2F1F] focus:outline-none"
+                          className="w-[70px]  h-[50px] bg-[#28CC2F1F] focus:outline-none"
                           value={bloodType}
                           onChange={(e) => setBloodType(e.target.value)}>
                           <option value="A+">A+</option>
