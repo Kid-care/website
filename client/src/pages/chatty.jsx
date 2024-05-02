@@ -7,8 +7,7 @@ import info from "../assets/info.svg";
 import record from "../assets/record.svg";
 import imageUrl from "../assets/Chat bot-bro 1.svg";
 import send from "../assets/send.svg";
-import robot from "../assets/Robot.svg"; 
-  
+
 const ChatBot = () => {
   const dispatch = useDispatch();
   const { messages, loading } = useSelector((state) => state.chat);
@@ -18,11 +17,11 @@ const ChatBot = () => {
   const [chatMessages, setChatMessages] = useState([]);
 
   useEffect(() => {
-    const newMessage = messages[messages.length - 1];
-
-    if (newMessage) {
-      setChatMessages(prevMessages => [...prevMessages, { type: newMessage.type, content: newMessage.text }]);
-    }
+    const newMessages = messages.map((message) => ({
+      type: message.type,
+      content: message.text,
+    }));
+    setChatMessages([...chatMessages, ...newMessages]);
   }, [messages]);
 
   const openModal = (paragraph1, paragraph2) => {
@@ -41,7 +40,7 @@ const ChatBot = () => {
 
     await dispatch(sendChatMessageAsync(inputMessage));
 
-    setInputMessage(""); 
+    setInputMessage("");
   };
 
   return (
@@ -52,24 +51,16 @@ const ChatBot = () => {
         </header>
         <section>
           <div className="flex flex-col py-32 h-screen items-center bg-white">
-            <div className="flex flex-col overflow-y-auto gap-16  p-9 w-full">
+            <div className="flex flex-col overflow-y-auto gap-7 p-9 w-full">
               {chatMessages.map((message, index) => (
                 <div
                   dir="rtl"
                   key={index}
-                  className={`relative font-sans font-light rounded-[20px] text-[18px] leading-[35px] max-w-[1000px] max-h-[1000px]  tracking-[0.25px] p-7  ${
+                  className={`font-sans font-light rounded-[20px] text-[18px] leading-[30px]  max-w-[1000px] max-h-[600px] tracking-[0.25px] p-6  ${
                     message.type === "user"
                       ? "bg-[#28CC9E4D] text-right mr-auto"
-                      : "bg-[#E6E6E6] text-right ml-auto "
+                      : "bg-[#E6E6E6]  text-right ml-auto "
                   }`}>
-                  <div dir="rtl" className="absolute top-[-50px] left-0 ">
-                    {message.type !== "user" && (
-                      <img
-                        src={robot}
-                        alt="Chat bot"
-                      />
-                    )}
-                  </div>
                   {message.content}
                 </div>
               ))}
@@ -78,7 +69,7 @@ const ChatBot = () => {
                   <div role="status">
                     <svg
                       aria-hidden="true"
-                      className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                      class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +82,7 @@ const ChatBot = () => {
                         fill="currentFill"
                       />
                     </svg>
-                    <span className="sr-only">Loading...</span>
+                    <span class="sr-only">Loading...</span>
                   </div>
                 </div>
               )}
