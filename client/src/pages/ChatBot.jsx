@@ -7,8 +7,8 @@ import info from "../assets/info.svg";
 import record from "../assets/record.svg";
 import imageUrl from "../assets/Chat bot-bro 1.svg";
 import send from "../assets/send.svg";
-import robot from "../assets/Robot.svg"; 
-  
+import robot from "../assets/Robot.svg";
+
 const ChatBot = () => {
   const dispatch = useDispatch();
   const { messages, loading } = useSelector((state) => state.chat);
@@ -21,7 +21,10 @@ const ChatBot = () => {
     const newMessage = messages[messages.length - 1];
 
     if (newMessage) {
-      setChatMessages(prevMessages => [...prevMessages, { type: newMessage.type, content: newMessage.text }]);
+      setChatMessages((prevMessages) => [
+        ...prevMessages,
+        { type: newMessage.type, content: newMessage.text },
+      ]);
     }
   }, [messages]);
 
@@ -41,7 +44,7 @@ const ChatBot = () => {
 
     await dispatch(sendChatMessageAsync(inputMessage));
 
-    setInputMessage(""); 
+    setInputMessage("");
   };
 
   return (
@@ -51,23 +54,26 @@ const ChatBot = () => {
           <Navbar />
         </header>
         <section>
-          <div className="flex flex-col py-32 h-screen items-center bg-white">
-            <div className="flex flex-col overflow-y-auto gap-16  p-9 w-full">
+          <div className="flex flex-col py-32 h-screen items-center bg-white ">
+            <div className="flex flex-col overflow-y-auto gap-16  p-9  min-w-[1000px] min-h-full bg-[#28CC9E33] ">
+              <div className="animate-pulse  relative font-sans font-bold rounded-[20px] text-[20px] mt-8  leading-[35px]    tracking-[0.25px]   bg-[#E6E6E6] w-fit p-10 ">
+                مرحبا! انا مساعدك الطبي ماهو سؤالك ؟{" "}
+                <div dir="rtl" className="absolute top-[-50px] left-0 ">
+                  <img src={robot} alt="Chat bot" />
+                </div>
+              </div>
               {chatMessages.map((message, index) => (
                 <div
                   dir="rtl"
                   key={index}
-                  className={`relative font-sans font-light rounded-[20px] text-[18px] leading-[35px] max-w-[1000px] max-h-[1000px]  tracking-[0.25px] p-7  ${
+                  className={`relative font-sans font-light rounded-[20px] text-[18px] leading-[35px] max-w-[700px]   tracking-[0.25px] p-7  ${
                     message.type === "user"
                       ? "bg-[#28CC9E4D] text-right mr-auto"
                       : "bg-[#E6E6E6] text-right ml-auto "
                   }`}>
                   <div dir="rtl" className="absolute top-[-50px] left-0 ">
                     {message.type !== "user" && (
-                      <img
-                        src={robot}
-                        alt="Chat bot"
-                      />
+                      <img src={robot} alt="Chat bot" />
                     )}
                   </div>
                   {message.content}
@@ -113,7 +119,7 @@ const ChatBot = () => {
               <div className=" " dir="rtl">
                 <input
                   type="text"
-                  className="flex-grow font-[Roboto] font-light text-[18px] leading-[20px] tracking-[0.25px] outline-none border border-1 border-[#196B69] rounded-[20px] p-5  w-[1200px] h-[51] "
+                  className="flex-grow font-[Roboto] font-light text-[18px] leading-[20px] tracking-[0.25px] outline-none border border-1 border-[#196B69] rounded-[20px] p-5  w-[900px] h-[51] "
                   placeholder="سؤالك......"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
