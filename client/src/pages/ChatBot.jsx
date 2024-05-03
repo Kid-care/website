@@ -50,7 +50,7 @@ const ChatBot = () => {
   return (
     <>
       <div className="relative overflow-y-hidden overflow-x-hidden">
-        <header>
+        <header> 
           <Navbar />
         </header>
         <section>
