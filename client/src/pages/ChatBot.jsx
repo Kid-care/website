@@ -55,7 +55,7 @@ const ChatBot = () => {
         </header>
         <section>
           <div className="flex flex-col py-32 h-screen items-center bg-white ">
-            <div className="flex flex-col overflow-y-auto gap-16  p-9  min-w-[1000px] min-h-full bg-[#28CC9E33] rounded-[10px] ">
+            <div className="flex flex-col overflow-y-auto gap-16  p-9  min-w-[1000px] min-h-full bg-gradient-to-r from-[#28CC2F1F]  to-[#28CC9E33] rounded-[10px]  ">
               <div className="animate-pulse  relative font-sans font-bold rounded-[20px] text-[20px] mt-8  leading-[35px]    tracking-[0.25px]   bg-[#E6E6E6] w-fit p-10 ">
                 مرحبا! انا مساعدك الطبي ماهو سؤالك ؟
                 <div dir="rtl" className="absolute top-[-50px] left-0 ">
