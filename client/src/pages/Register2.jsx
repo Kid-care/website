@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { registerAsync } from "../store/slices/authSlice";
@@ -188,11 +188,13 @@ const Register2 = () => {
         </div>
 
         <div className="flex flex-nowrap flex-col flex-1 relative">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="right-[60px] mt-2 w-24 absolute"
-          />
+          <NavLink to="/" dir="rtl">
+            <img
+              src={Logo}
+              alt="Logo"
+              className="right-[60px] mt-2 w-24 absolute"
+            />
+          </NavLink>
           <div className=" flex flex-col justify-center items-center h-full mt-8">
             <form
               className="absolute w-[400px] mt-5 mr-9 flex flex-col gap-y-2 "

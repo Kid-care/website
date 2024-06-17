@@ -1,4 +1,3 @@
-// authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "../../config/config";
 
@@ -83,22 +82,134 @@ export const getDataFromBackendAsync = createAsyncThunk(
       throw error.message;
     }
   }
+
+
 );
+
+// Dashboard thunks...
+
+export const fetchUserStatsAsync = createAsyncThunk(
+  "dashboard/fetchUserStats",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.fetchUserStats(token);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const fetchAdminCountAsync = createAsyncThunk(
+  "dashboard/fetchAdminCount",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.fetchAdminCount(token);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const fetchUserCountAsync = createAsyncThunk(
+  "dashboard/fetchUserCount",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.fetchUserCount(token);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const fetchAllAdminsAsync = createAsyncThunk(
+  "dashboard/fetchAllAdmins",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.fetchAllAdmins(token);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export const addAdminAsync = createAsyncThunk(
+  "dashboard/addAdmin",
+  async (adminData, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.addAdmin(token, adminData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export const updateAdminAsync = createAsyncThunk(
+  "dashboard/updateAdmin",
+  async ({ adminId, adminData }, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.updateAdmin(token, adminId, adminData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export const deleteAdminAsync = createAsyncThunk(
+  "dashboard/deleteAdmin",
+  async (adminId, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      const response = await authService.deleteAdmin(token, adminId);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+
+
+
+
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: localStorage.getItem("token") || "",
     user: {},
+    admins: [],
+    userCount: 0,
+    adminCount: 0,
+    ageGroups: {},
     loading: "idle",
     error: null,
   },
   reducers: {
     logout: (state) => {
-      state.token = "";
-      state.user = {};
-      state.loading = "idle";
-      state.error = null;
+     state.token = "";
+     state.user = {};
+     state.admins = [];
+     state.userCount = 0;
+     state.adminCount = 0;
+     state.ageGroups = {};
+     state.loading = "idle";
+     state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -202,7 +313,153 @@ const authSlice = createSlice({
         } else {
           state.error = "An error occurred";
         }
+      })
+
+      .addCase(fetchUserStatsAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(fetchUserStatsAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.admins = action.payload;
+                console.log(action.payload);
+
+
+        // Handle the fulfilled action here
+      })
+      .addCase(fetchUserStatsAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+
+      .addCase(fetchAdminCountAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(fetchAdminCountAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+                state.admins = action.payload;
+        console.log(action.payload);
+
+        // Handle the fulfilled action here
+      })
+      .addCase(fetchAdminCountAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+
+      .addCase(fetchUserCountAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(fetchUserCountAsync.fulfilled, (state, action) => {
+               state.admins = action.payload;
+
+        state.loading = "idle";
+                console.log(action.payload);
+
+        // Handle the fulfilled action here
+      })
+      .addCase(fetchUserCountAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+
+      .addCase(fetchAllAdminsAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(fetchAllAdminsAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+                state.admins = action.payload;
+
+        // Handle the fulfilled action here
+      })
+      .addCase(fetchAllAdminsAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+
+      .addCase(addAdminAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(addAdminAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+                state.admins = action.payload;
+
+        // Handle the fulfilled action here
+      })
+      .addCase(addAdminAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+
+      .addCase(updateAdminAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(updateAdminAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+                state.admins = action.payload;
+
+        // Handle the fulfilled action here
+      })
+      .addCase(updateAdminAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
+      })
+
+      .addCase(deleteAdminAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(deleteAdminAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+                state.admins = action.payload;
+
+        // Handle the fulfilled action here
+      })
+      .addCase(deleteAdminAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
       });
+
+
+    
+    
+    
+    
+    
+    
   },
 });
 

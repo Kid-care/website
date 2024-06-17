@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { forgotPasswordAsync } from "../store/slices/authSlice.js";
 import imageUrl from "../assets/message.svg";
 // import { useNavigate } from "react-router-dom";
+import {NavLink } from "react-router-dom";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
@@ -122,11 +123,14 @@ const ForgotPassword = () => {
         </div>
 
         <div className="flex flex-nowrap flex-col flex-1 relative">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="right-[60px] mt-2 w-24 absolute"
-          />
+       
+          <NavLink to="/" dir="rtl">
+            <img
+              src={Logo}
+              alt="Logo"
+              className="right-[60px] mt-2 w-24 absolute"
+            />
+          </NavLink>
           <div className=" flex flex-col justify-center items-center h-full">
             <form
               className="absolute w-[400px]  mr-9 flex flex-col gap-y-9 "

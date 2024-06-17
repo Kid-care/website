@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from "react";
 import {
   BrowserRouter,
@@ -18,21 +19,27 @@ import FamilyRegistry from "./pages/FamilyRegistry";
 import CompleteExamination from "./pages/CompleteExamination";
 import Profile from "./pages/Profile";
 import AboutUs from "./pages/AboutUs.jsx";
-import ChatBot from "./pages/ChatBot.jsx"
+import ChatBot from "./pages/ChatBot.jsx";
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard.jsx";
+
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("token") ? true : false // Check session storage
+    localStorage.getItem("token") ? true : false // Check local storage
   );
+
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     // Check if token exists in local storage
     const token = localStorage.getItem("token");
     if (token) {
       setIsAuthenticated(true);
+      const role = localStorage.getItem("role"); // Fetch user role from local storage
+      setUserRole(role);
     }
   }, []);
 
@@ -41,6 +48,7 @@ function App() {
       <BrowserRouter>
         <AppLayout
           isAuthenticated={isAuthenticated}
+          userRole={userRole}
           setIsAuthenticated={setIsAuthenticated}
         />
       </BrowserRouter>
@@ -48,7 +56,7 @@ function App() {
   );
 }
 
-function AppLayout({ isAuthenticated, setIsAuthenticated }) {
+function AppLayout({ isAuthenticated, userRole, setIsAuthenticated }) {
   const location = useLocation();
 
   const protectedRoutes = [
@@ -67,11 +75,12 @@ function AppLayout({ isAuthenticated, setIsAuthenticated }) {
     return <Navigate to="/Login" />;
   }
 
-  return (
-    <>
-      {(location.pathname === "/" || requiresAuth) }
+  if (userRole === "owner") {
+    return (
       <Routes>
+        <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/" element={<Home />} />
+
         <Route
           path="/Login"
           element={<Login setIsAuthenticated={setIsAuthenticated} />}
@@ -83,17 +92,41 @@ function AppLayout({ isAuthenticated, setIsAuthenticated }) {
           path="/password/reset-password/:token"
           element={<ResetPassword />}
         />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/MedicalHistory" element={<MedicalHistory />} />
-        <Route path="/Vaccinations" element={<Vaccinations />} />
-        <Route path="/FamilyRegistry" element={<FamilyRegistry />} />
-        <Route path="/CompleteExamination" element={<CompleteExamination />} />
-        <Route path="/AboutUs" element={<AboutUs />} />
-        <Route path="/ChatBot" element={<ChatBot />} />
-        <Route path="*" element={<h1>page not found </h1>} />
+        <Route path="*" element={<Navigate to="/Dashboard" />} />
       </Routes>
-      {(location.pathname === "/" || requiresAuth) }
-    </>
+    );
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route
+        path="/Login"
+        element={<Login setIsAuthenticated={setIsAuthenticated} />}
+      />
+      <Route path="/Register1" element={<Register1 />} />
+      <Route path="/Register2" element={<Register2 />} />
+      <Route path="/ForgetPassword" element={<ForgetPassword />} />
+      <Route
+        path="/password/reset-password/:token"
+        element={<ResetPassword />}
+      />
+      {userRole !== "owner" && (
+        <>
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/MedicalHistory" element={<MedicalHistory />} />
+          <Route path="/Vaccinations" element={<Vaccinations />} />
+          <Route path="/FamilyRegistry" element={<FamilyRegistry />} />
+          <Route
+            path="/CompleteExamination"
+            element={<CompleteExamination />}
+          />
+          <Route path="/AboutUs" element={<AboutUs />} />
+          <Route path="/ChatBot" element={<ChatBot />} />
+        </>
+      )}
+      <Route path="*" element={<h1>page not found</h1>} />
+    </Routes>
   );
 }
 

@@ -1,65 +1,64 @@
-// Profile.js
 import React, { useEffect, useState } from "react";
 import Input from "../components/Input";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import AddUser from "../components/AddUser";
+import addUserIcon from "../assets/addUser.svg";
+import addIcon from "../assets/addAccount.svg";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
   getDataFromBackendAsync,
   sendDataToBackendAsync,
   logout,
 } from "../store/slices/authSlice";
-import AddUser from "../components/AddUser";
-import addUser from "../assets/Vector (3).svg";
-import add from "../assets/addAccount.svg";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
-  const user = useSelector((state) => state.auth.user);
-  console.log("data", user);
-
-  const [inputFieldsData, setInputFieldsData] = useState([]);
   const navigate = useNavigate();
+
+  const { user, token } = useSelector((state) => state.auth);
+  const [inputFieldsData, setInputFieldsData] = useState([]);
   const [birthdate, setBirthdate] = useState({ day: "", month: "", year: "" });
   const [bloodType, setBloodType] = useState("");
+  const [accounts, setAccounts] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
-    dispatch(getDataFromBackendAsync());
-  }, [dispatch]);
+    if (!token) {
+      navigate("/login");
+    } else {
+      dispatch(getDataFromBackendAsync());
+    }
+  }, [token, dispatch, navigate]);
 
   useEffect(() => {
-    if (Object.keys(user).length) {
-      setInputFieldsData([
-        { id: 1, label: "اسم المستخدم", initialValue: user.userName || "" },
-        { id: 2, label: "اسم الاب", initialValue: user.fatherName || "" },
-        { id: 3, label: "رقم الهاتف", initialValue: user.phoneNumber || "" },
-        { id: 4, label: "البريد الالكتروني", initialValue: user.email || "" },
-        { id: 5, label: "اسم الام", initialValue: user.motherName || "" },
-        { id: 6, label: "الرقم القومي", initialValue: user.NationalID || "" },
-      ]);
-      console.log(user.birthDate);
-      if (user.birthDate) {
-        const [year, month, day] = user.birthDate.split("/");
-        console.log("Year:", year);
-        console.log("Month:", month);
-        console.log("Day:", day);
-        setBirthdate({
-          day: day || "",
-          month: month || "",
-          year: year || "",
-        });
-      } else {
-        setBirthdate({ day: "", month: "", year: "" });
-      }
-
-      setBloodType(user.bloodType || "");
-      console.log(user.bloodType);
-      console.log("Birthdate set:", birthdate);
-      localStorage.setItem("user", JSON.stringify(user));
+    if (user) {
+      setCurrentUser(user);
+      setAccounts([user]);
+      initializeInputFields(user);
     }
   }, [user]);
+
+  const initializeInputFields = (user) => {
+    setInputFieldsData([
+      { id: 1, label: "اسم المستخدم", initialValue: user.userName || "" },
+      { id: 2, label: "اسم الاب", initialValue: user.fatherName || "" },
+      { id: 3, label: "رقم الهاتف", initialValue: user.phoneNumber || "" },
+      { id: 4, label: "البريد الالكتروني", initialValue: user.email || "" },
+      { id: 5, label: "اسم الام", initialValue: user.motherName || "" },
+      { id: 6, label: "الرقم القومي", initialValue: user.NationalID || "" },
+    ]);
+
+    if (user.birthDate) {
+      const [year, month, day] = user.birthDate.split("/");
+      setBirthdate({ day: day || "", month: month || "", year: year || "" });
+    } else {
+      setBirthdate({ day: "", month: "", year: "" });
+    }
+
+    setBloodType(user.bloodType || "");
+  };
 
   const handleFieldUpdate = (fieldId, updatedValue) => {
     const updatedData = inputFieldsData.map((field) =>
@@ -87,7 +86,19 @@ const Profile = () => {
       birthDate: `${birthdate.year}/${birthdate.month}/${birthdate.day}`,
       bloodType: bloodType,
     };
+
     dispatch(sendDataToBackendAsync({ token, data: updatedData }));
+  };
+
+  const handleAddAccount = async () => {
+    // Redirect to login page to add a new account
+    navigate("/login");
+    
+  };
+
+  const handleSwitchAccount = (account) => {
+    setCurrentUser(account);
+    initializeInputFields(account);
   };
 
   const handleLogout = () => {
@@ -105,42 +116,45 @@ const Profile = () => {
         </header>
 
         <div className="flex justify-center items-center gap-80 " dir="rtl">
-          {/* Sidebar */}
           <div dir="rtl" className="">
             <aside className="bg-[#28CC9E4D] w-[350px] h-screen flex flex-col items-center fixed top-0 right-0">
               <div className="w-[250px] m-28  flex flex-col h-screen space-y-32">
                 <div className=" flex flex-col   items-center text-center gap-y-5 ">
                   <div className="rounded-full  w-[121.08px] h-[130.51px] bg-[#B4B4B4] flex items-center justify-center  cursor-pointer">
                     <img
-                      src={addUser}
+                      src={addUserIcon}
                       alt="user"
-                      className="w-[72.65px] h-[78.3px]  "
+                      className="w-[72.65px] h-[78.3px]"
                     />
                   </div>
-                  <h3
-                    dir="rtl"
-                    className="text-center cursor-pointer text-[#000000] text-[20px] leading-[20px] tracking-[0.25px] ">
-                    alaa shokry helmy mohamed
+                  <h3 className="text-center cursor-pointer text-[#000000] text-[20px] leading-[20px] tracking-[0.25px]">
+                    {currentUser.userName}
                   </h3>
                 </div>
 
                 <div className=" flex flex-col gap-4">
-                  <AddUser />
-                  <AddUser />
-                  <AddUser />
+                  {accounts.map((account) => (
+                    <div
+                      key={account.id}
+                      account={account}
+                      isActive={account === currentUser}
+                      onClick={() => handleSwitchAccount(account)}>
+                      <AddUser account={account} />
+                    </div>
+                  ))}
 
                   <div>
                     <div className="flex gap-4 w-[178.88px] items-center ">
-                      <div className="rounded-full  w-[37.25px] h-[40.16px] bg-[#B4B4B4] flex items-center justify-center cursor-pointer">
+                      <div
+                        className="rounded-full w-[37.25px] h-[40.16px] bg-[#B4B4B4] flex items-center justify-center cursor-pointer"
+                        onClick={handleAddAccount}>
                         <img
-                          src={add}
+                          src={addIcon}
                           alt="addUser"
-                          className="w-[22.35px] h-[24.09px]  "
+                          className="w-[22.35px] h-[24.09px]"
                         />
                       </div>
-                      <h3
-                        dir="rtl"
-                        className="cursor-pointer text-[#000000CC] text-[16px] leading-[20px] tracking-[0.25px] ">
+                      <h3 className="cursor-pointer text-[#000000CC] text-[16px] leading-[20px] tracking-[0.25px]">
                         اضافة حساب جديد
                       </h3>
                     </div>
@@ -149,26 +163,28 @@ const Profile = () => {
                 <div className=" text-center">
                   <button
                     onClick={handleLogout}
-                    className="bg-[#28CC9E] w-[234px] h-[57.46px] rounded-[20px] text-[#132F2B] text-center text-[18px] leading-[20px] tracking-[0.25px]  ">
+                    className="bg-[#28CC9E] w-[234px] h-[57.46px] rounded-[20px] text-[#132F2B] text-center text-[18px]
+                    leading-[20px] tracking
+-[0.25px]">
                     تسجيل الخروج
                   </button>
                 </div>
               </div>
-            </aside>{" "}
+            </aside>
           </div>
+
           {/* Main Content */}
           <div dir="rtl" className="p-20 mt-16 ">
-            <main className="bg-gradient-to-r from-[#28CC2F1F]  to-[#28CC9E33] rounded-[20px] w-[1230px] h-[750px] flex flex-col justify-around ">
+            <main className="bg-gradient-to-r from-[#28CC2F1F] to-[#28CC9E33] rounded-[20px] w-[1230px] h-[700px] flex flex-col justify-around">
               <div className="p-6 m-5">
-                <div className=" ">
-                  <h1 className="text-center  text-[22px]  leading-[20px] tracking-[0.25px] text-[#000000] font-[Roboto] font-semibold	">
+                <div>
+                  <h1 className="text-center text-[22px] leading-[20px] tracking-[0.25px] text-[#000000] font-[Roboto] font-semibold">
                     الحساب الشخصي
                   </h1>
                 </div>
                 {/* Form Fields */}
-
-                <div className=" flex flex-col justify-between py-5">
-                  <div className="flex justify-between items-center  ">
+                <div className="flex flex-col justify-between py-5">
+                  <div className="flex justify-between items-center">
                     {/* First Column of Inputs */}
                     <div className="flex flex-col space-y-10">
                       {inputFieldsData.slice(0, 3).map((field) => (

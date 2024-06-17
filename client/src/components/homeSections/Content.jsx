@@ -16,54 +16,83 @@ import family from "../../assets/family.svg";
 import boychild from "../../assets/boychild.svg";
 import women from "../../assets/women.svg";
 import chatbot from "../../assets/ChatBot.svg";
-import { Link } from "react-router-dom";
 import Card from "../../components/Card";
+import { Link, useNavigate } from "react-router-dom";
+
 const Content = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <main className="">
         <div>
           {/* section 1 */}
           <section dir="rtl" className="">
-            <div className="flex gap-72 items-center ">
-              <div dir="rtl" className="flex  ">
-                <img src={Firstvector} alt="vector" className=" w-[651px]  " />
+            <div className="flex justify-between ">
+              <div dir="rtl" className="flex  mr-6 ">
+                <img
+                  src={Firstvector}
+                  alt="vector"
+                  className=" w-[651px]  absolute top-0  "
+                />
+
                 <img
                   src={Doctors}
                   alt="vector"
-                  className=" w-[612px] h-[612px]  absolute top-36 right-36"
+                  className=" w-[612px] h-[612px]  absolute top-60 mr-8 "
                 />
               </div>
-              <div
-                dir="rtl"
-                className="flex flex-col space-y-6 text-center w-[580px]  h-[256px] py-60 ">
-                <h1 className="text-[#132F2B] text-[32px] leading-[38.73px] font-[Inter] font-semibold	">
-                  الرعاية الصحية الشاملة
-                </h1>
-                <p className="text-[#000000CC] font-[Inter] font-normal	 text-[24px] leading-[29.05px]">
-                  يمكنك الاطمئنان علي صحتك وعافيتك بثقة. يوفر موقعنا المعلومات
-                  الدقيقة والموثوقة حول التطعيمات، وتاريخ العائلة المرضي،
-                  والفحوصات السنوية اللازمة، مما يسهل عليك متابعة صحتك بشكل
-                  منتظم وفعال. اكتشف الآن كيف يمكن لموقعنا أن يكون رفيقك الموثوق
-                  في رحلة العناية بصحتك
-                </p>
+              <div className="ml-60  flex gap-40">
+               
+                <div>
+                  <div
+                    dir="rtl"
+                    className="flex flex-col space-y-8  w-[822px]  h-[256px] py-60  ">
+                    <h1 className="text-[#132F2B] text-[32px] leading-[38.73px] font-[Inter] text-center font-semibold	">
+                      الرعاية الصحية الشاملة
+                    </h1>
+                    <p className="text-[#000000CC] font-[Inter] font-normal	 text-[24px] leading-[29.05px]">
+                      يمكنك الاطمئنان علي صحتك وعافيتك بثقة. يوفر موقعنا
+                      المعلومات الدقيقة والموثوقة حول التطعيمات، وتاريخ العائلة
+                      المرضي، والفحوصات السنوية اللازمة، مما يسهل عليك متابعة
+                      صحتك بشكل منتظم وفعال. اكتشف الآن كيف يمكن لموقعنا أن يكون
+                      رفيقك الموثوق في رحلة العناية بصحتك
+                    </p>
+                  </div>
+                  <div className="flex gap-x-7">
+                    <button
+                      className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-[400px]  rounded-[20px] text-[#132F2B] tracking-wider text-xl"
+                      type="button"
+                      dir="rtl"
+                      onClick={() => navigate("/Register1")}>
+                      إنشاء حساب
+                    </button>
+                    <button
+                      className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-[400px] rounded-[20px] text-[#132F2B] tracking-wider text-xl"
+                      type="button"
+                      dir="rtl"
+                      onClick={() => navigate("/Login")}>
+                      تسجيل الدخول
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div dir="rtl" className="w-full flex my-10">
+            <div dir="rtl" className="w-full flex ">
               <div className=" flex   ">
                 <img
                   src={Secondvector}
                   alt="Secondvector"
-                  className="  w-[814px] h-[595px] absolute left-[-120px] my-20 top[582px]  "
+                  className="  w-[900px] h-[595px] absolute left-[-100px]    "
                 />
                 <img
                   src={Thirdvector}
                   alt="Thirdvector"
-                  className="w-[612px] h-[612px] absolute left-0 my-36
+                  className="w-[612px] h-[612px] absolute left-[-20px] mt-7
                   "
                 />
-                <div className="fixed left-44 z-50 py-3 my-72 bg-[#196B69] w-[82px] h-[82px] flex items-center justify-center rounded-full">
+                <div className="fixed left-44 mt-44 z-50 py-3  bg-[#196B69] w-[82px] h-[82px] flex items-center justify-center rounded-full">
                   <Link to="/ChatBot">
                     <img src={chatbot} className="  " alt="chatbot" />
                   </Link>
@@ -76,7 +105,7 @@ const Content = () => {
                   className="w-[776px] h-[675.37px]  "
                 />
               </div>
-              <div className=" my-[30rem] w-full absolute right-60">
+              <div className=" my-[21rem] w-full absolute right-60">
                 <div className="flex flex-col space-y-20 ">
                   <div className="flex gap-x-20 ">
                     <Card
