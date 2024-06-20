@@ -5,6 +5,10 @@ import {
   fetchAdminCountAsync,
   fetchUserCountAsync,
   fetchAllAdminsAsync,
+  addAdminAsync,
+  addVaccinationAsync,
+  updateAdminAsync,
+  deleteAdminAsync,
   logout,
 } from "../store/slices/authSlice";
 import addAdmin from "../assets/addAdmin.svg";
@@ -15,7 +19,7 @@ import EditableTextField from "../components/Input.jsx";
 import Logout from "../assets/logout.svg";
 import save from "../assets/save.svg";
 import { useNavigate } from "react-router-dom";
-import { Bar } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
@@ -24,6 +28,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement,
 } from "chart.js";
 
 ChartJS.register(
@@ -32,13 +37,14 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement
 );
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // State for logout modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
   const [showVaccinationModal, setShowVaccinationModal] = useState(false);
@@ -52,16 +58,15 @@ const Dashboard = () => {
   });
   const [adminList, setAdminList] = useState([]);
   const [editingAdminId, setEditingAdminId] = useState(null);
-  const [editedAdminData, setEditedAdminData] = useState({}); // Initialize as empty object
+  const [editedAdminData, setEditedAdminData] = useState({});
   const [vaccineData, setVaccineData] = useState({
     vaccineName: "",
     category: "",
   });
   const tableContainerRef = useRef(null);
 
-  const { admins, userCount, adminCount, loading, error } = useSelector(
-    (state) => state.auth
-  );
+  const { admins, userCount, adminCount, token, ageGroups, loading, error } =
+    useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchUserStatsAsync());
@@ -99,21 +104,39 @@ const Dashboard = () => {
       }));
     }
   };
-
-  const handleAddAdmin = () => {
-    setAdminList((prevList) => [
-      ...prevList,
-      { ...newAdmin, _id: Date.now().toString() },
-    ]);
-    setNewAdmin({
-      name: "",
-      email: "",
-      phoneNumber: "",
-      city: "",
-      specialization: "",
-      password: "",
-    });
-    setShowModal(false);
+  const handleDeleteRaw = async (email,token) => {
+    try {
+      await dispatch(deleteAdminAsync(email,token));
+      setAdminList((prevList) =>
+        prevList.filter((admin) => admin.email !== email)
+      );
+    } catch (error) {
+      console.error("Error deleting admin:", error);
+      // Handle error state if necessary
+    }
+  };
+  const handleAddAdmin = async () => {
+    try {
+      await dispatch(addAdminAsync(newAdmin));
+      // Optionally, clear form inputs or close modal here
+      setAdminList((prevList) => [
+        ...prevList,
+        { ...newAdmin, _id: Date.now().toString() },
+      ]);
+      setNewAdmin({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        city: "",
+        specialization: "",
+        password: "",
+      });
+      // Close modal or reset UI state as needed
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error adding admin:", error);
+      // Handle error state if necessary
+    }
   };
 
   const options = {
@@ -124,20 +147,53 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: "Viewers Statistics",
+        text: "نسبة المشاهدات",
       },
     },
   };
-const viewData = {
-  labels: ["January", "February", "March", "April", "May", "June"],
-  datasets: [
-    {
-      label: "Viewers",
-      data: [120, 190, 300, 500, 200, 300],
-      backgroundColor: "#28CC9E",
+  const viewData = {
+    labels: ["January", "February", "March", "April", "May", "June"],
+    datasets: [
+      {
+        label: "Viewers",
+        data: [120, 190, 300, 500, 200, 300],
+        backgroundColor: "#28CC9E",
+      },
+    ],
+  };
+
+  const ageData = {
+    labels: ["0-18", "19-35", "36-60", "Other"],
+    datasets: [
+      {
+        data: [
+          ageGroups["0-18"],
+          ageGroups["19-35"],
+          ageGroups["36-60"],
+          ageGroups["61-infinity"],
+        ],
+        backgroundColor: ["#1C1C1C99", "#196B69", "#28CC9E4D", "#28CC9E"],
+        hoverBackgroundColor: ["#1C1C1C99", "#196B69", "#28CC9E4D", "#28CC9E"],
+      },
+    ],
+  };
+
+  const ageOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "",
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+      },
     },
-  ],
-};
+  };
   const openModal = () => {
     setShowModal(true);
   };
@@ -154,27 +210,30 @@ const viewData = {
     setShowVaccinationModal(false);
   };
 
-  const handleAddVaccination = () => {
-    console.log("Adding Vaccination:", vaccineData);
-    setShowVaccinationModal(false);
-  };
+  const saveEditedAdmin = (id) => {
+    const adminData = {
+      name: editedAdminData[id].name,
+      email: editedAdminData[id].email,
+      phoneNumber: editedAdminData[id].phoneNumber,
+      city: editedAdminData[id].city,
+      specialization: editedAdminData[id].specialization,
+    };
 
+    dispatch(updateAdminAsync(adminData));
+    setEditingAdminId(null);
+  };
   const handleEdit = (id) => {
+    const admin = adminList.find((admin) => admin._id === id);
+    if (admin) {
+      setEditedAdminData((prevState) => ({
+        ...prevState,
+        [id]: { ...admin },
+      }));
+    }
     setEditingAdminId(id);
   };
 
-  const handleDelete = (id) => {
-    setAdminList((prevList) => prevList.filter((admin) => admin._id !== id));
-  };
-
-  const saveEditedAdmin = (id) => {
-    setAdminList((prevList) =>
-      prevList.map((admin) =>
-        admin._id === id ? { ...admin, ...editedAdminData[id] } : admin
-      )
-    );
-    setEditingAdminId(null); // Clear editing state
-  };
+ 
 
   const getCellClass = (id) => {
     return editingAdminId === id
@@ -195,12 +254,32 @@ const viewData = {
     navigate("/login");
   };
 
+  const handleAddVaccination = async () => {
+    try {
+      const { vaccineName, category } = vaccineData;
+
+      // Add validation here if needed for vaccineName and categoryId
+
+      // Call your asynchronous action to add vaccination
+      await dispatch(addVaccinationAsync({ id: category, name: vaccineName }));
+
+      // Optionally, reset the form or close the modal after successful addition
+      setVaccineData({
+        vaccineName: "",
+        category: "",
+      });
+      setShowVaccinationModal(false);
+    } catch (error) {
+      console.error("Error adding vaccination:", error);
+      // Handle error state if necessary
+    }
+  };
+
   return (
     <>
       <div className="m-5 bg-[#FFFFFF] max-h-screen">
-        <div className="p-2 bg-[#28CC9E4D] h-[95vh] rounded-[20px]">
-          {loading === "pending" && <p>Loading...</p>}
-          {error && <p className="text-red-500">{error}</p>}
+        <div className="p-6 bg-[#28CC9E4D] h-[95vh] rounded-[20px]">
+          {loading === "pending" && <p className="animate-pulse">Loading...</p>}
           <div className="flex justify-around" dir="rtl">
             <div className="flex flex-col gap-3">
               <div>
@@ -237,10 +316,50 @@ const viewData = {
                 <Bar data={viewData} options={options} />
               </div>
               <div className="bg-[#FFFFFF] w-[414px] h-[264.06px] rounded-[20px] ">
-                <h2 className="flex justify-center p-4 text-[#1C1C1C] font-semibold text-[18px] leading-[20px]">
-                  {" "}
-                  اعمار المستخدمين
-                </h2>
+                <div className="p-2">
+                  <h2 className="flex justify-center p-2 text-[#1C1C1C] font-semibold text-[18px] leading-[20px]">
+                    اعمار المستخدمين
+                  </h2>
+                </div>
+                <div className="flex  justify-between ">
+                  <div className="flex flex-col gap-5 py-6 w-[200px]" dir="ltr">
+                    <div className="flex justify-around ">
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        0-18
+                      </span>
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        {ageGroups["0-18"]}
+                      </span>
+                    </div>
+                    <div className="flex justify-around">
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        19-35
+                      </span>
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        {ageGroups["19-35"]}
+                      </span>
+                    </div>
+                    <div className="flex justify-around">
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        36-60
+                      </span>
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        {ageGroups["36-60"]}
+                      </span>
+                    </div>
+                    <div className="flex justify-around">
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        Other
+                      </span>
+                      <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
+                        {ageGroups["61-infinity"]}
+                      </span>
+                    </div>
+                  </div>
+                  <div className=" w-[200px]  ">
+                    <Doughnut data={ageData} options={ageOptions} />
+                  </div>
+                </div>
               </div>
               <div>
                 <button
@@ -292,9 +411,7 @@ const viewData = {
                             {editingAdminId === admin._id ? (
                               <input
                                 type="text"
-                                value={
-                                  editedAdminData[admin._id]?.name || admin.name
-                                }
+                                value={editedAdminData[admin._id]?.name}
                                 onChange={(e) =>
                                   handleInputChange(
                                     "name",
@@ -312,10 +429,7 @@ const viewData = {
                             {editingAdminId === admin._id ? (
                               <input
                                 type="text"
-                                value={
-                                  editedAdminData[admin._id]?.email ||
-                                  admin.email
-                                }
+                                value={editedAdminData[admin._id]?.email}
                                 onChange={(e) =>
                                   handleInputChange(
                                     "email",
@@ -333,10 +447,7 @@ const viewData = {
                             {editingAdminId === admin._id ? (
                               <input
                                 type="text"
-                                value={
-                                  editedAdminData[admin._id]?.phoneNumber ||
-                                  admin.phoneNumber
-                                }
+                                value={editedAdminData[admin._id]?.phoneNumber}
                                 onChange={(e) =>
                                   handleInputChange(
                                     "phoneNumber",
@@ -354,9 +465,7 @@ const viewData = {
                             {editingAdminId === admin._id ? (
                               <input
                                 type="text"
-                                value={
-                                  editedAdminData[admin._id]?.city || admin.city
-                                }
+                                value={editedAdminData[admin._id]?.city}
                                 onChange={(e) =>
                                   handleInputChange(
                                     "city",
@@ -375,8 +484,7 @@ const viewData = {
                               <input
                                 type="text"
                                 value={
-                                  editedAdminData[admin._id]?.specialization ||
-                                  admin.specialization
+                                  editedAdminData[admin._id]?.specialization
                                 }
                                 onChange={(e) =>
                                   handleInputChange(
@@ -411,7 +519,7 @@ const viewData = {
                                   src={deleteAdmin}
                                   alt="Delete"
                                   className="cursor-pointer"
-                                  onClick={() => handleDelete(admin._id)}
+                                  onClick={() => handleDeleteRaw(admin.email)}
                                 />
                               </div>
                             )}

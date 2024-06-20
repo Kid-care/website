@@ -110,7 +110,6 @@ const authService = {
     );
     return response.data;
   },
-  
 
   addAdmin: async (token, adminData) => {
     const response = await axios.post(
@@ -130,10 +129,25 @@ const authService = {
         headers: { Authorization: token },
       }
     );
-    return response.data;
+    return response.data.admins;
   },
 
-
+  addVaccination: async ( id, name) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/v1/Item/create_Item`,
+        { name },
+        {
+          headers: {
+            category: id,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  },
 };
 
 export default authService;

@@ -82,8 +82,6 @@ export const getDataFromBackendAsync = createAsyncThunk(
       throw error.message;
     }
   }
-
-
 );
 
 // Dashboard thunks...
@@ -140,7 +138,6 @@ export const fetchAllAdminsAsync = createAsyncThunk(
   }
 );
 
-
 export const addAdminAsync = createAsyncThunk(
   "dashboard/addAdmin",
   async (adminData, { getState, rejectWithValue }) => {
@@ -154,27 +151,25 @@ export const addAdminAsync = createAsyncThunk(
   }
 );
 
-
 export const updateAdminAsync = createAsyncThunk(
   "dashboard/updateAdmin",
-  async ({ adminId, adminData }, { getState, rejectWithValue }) => {
+  async (adminData, { getState, rejectWithValue }) => {
     try {
       const token = getState().auth.token;
-      const response = await authService.updateAdmin(token, adminId, adminData);
+      const response = await authService.updateAdmin(token, adminData);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 export const deleteAdminAsync = createAsyncThunk(
   "dashboard/deleteAdmin",
-  async (adminId, { getState, rejectWithValue }) => {
+  async (email, { getState, rejectWithValue }) => {
     try {
       const token = getState().auth.token;
-      const response = await authService.deleteAdmin(token, adminId);
+      const response = await authService.deleteAdmin(token, email);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -182,11 +177,17 @@ export const deleteAdminAsync = createAsyncThunk(
   }
 );
 
-
-
-
-
-
+export const addVaccinationAsync = createAsyncThunk(
+  "vaccination/add",
+  async ({ id, name }, { rejectWithValue }) => {
+    try {
+      const response = await authService.addVaccination(id, name);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -202,14 +203,14 @@ const authSlice = createSlice({
   },
   reducers: {
     logout: (state) => {
-     state.token = "";
-     state.user = {};
-     state.admins = [];
-     state.userCount = 0;
-     state.adminCount = 0;
-     state.ageGroups = {};
-     state.loading = "idle";
-     state.error = null;
+      state.token = "";
+      state.user = {};
+      state.admins = [];
+      state.userCount = 0;
+      state.adminCount = 0;
+      state.ageGroups = {};
+      state.loading = "idle";
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -220,6 +221,7 @@ const authSlice = createSlice({
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         state.loading = "idle";
+
         console.log(action.payload);
       })
       .addCase(loginAsync.rejected, (state, action) => {
@@ -321,9 +323,9 @@ const authSlice = createSlice({
       })
       .addCase(fetchUserStatsAsync.fulfilled, (state, action) => {
         state.loading = "idle";
-        state.admins = action.payload;
-                console.log(action.payload);
+        state.ageGroups = action.payload.ageGroups;
 
+        console.log(action.payload);
 
         // Handle the fulfilled action here
       })
@@ -342,7 +344,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchAdminCountAsync.fulfilled, (state, action) => {
         state.loading = "idle";
-                state.admins = action.payload;
+        state.adminCount = action.payload.num;
         console.log(action.payload);
 
         // Handle the fulfilled action here
@@ -361,10 +363,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchUserCountAsync.fulfilled, (state, action) => {
-               state.admins = action.payload;
+        state.userCount = action.payload.num;
 
         state.loading = "idle";
-                console.log(action.payload);
+        console.log(action.payload);
 
         // Handle the fulfilled action here
       })
@@ -383,7 +385,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchAllAdminsAsync.fulfilled, (state, action) => {
         state.loading = "idle";
-                state.admins = action.payload;
+        state.admins = action.payload;
 
         // Handle the fulfilled action here
       })
@@ -402,7 +404,7 @@ const authSlice = createSlice({
       })
       .addCase(addAdminAsync.fulfilled, (state, action) => {
         state.loading = "idle";
-                state.admins = action.payload;
+        state.admins = action.payload;
 
         // Handle the fulfilled action here
       })
@@ -421,9 +423,7 @@ const authSlice = createSlice({
       })
       .addCase(updateAdminAsync.fulfilled, (state, action) => {
         state.loading = "idle";
-                state.admins = action.payload;
-
-        // Handle the fulfilled action here
+        console.log(action.payload);
       })
       .addCase(updateAdminAsync.rejected, (state, action) => {
         state.loading = "idle";
@@ -440,7 +440,7 @@ const authSlice = createSlice({
       })
       .addCase(deleteAdminAsync.fulfilled, (state, action) => {
         state.loading = "idle";
-                state.admins = action.payload;
+        state.admins = action.payload;
 
         // Handle the fulfilled action here
       })
@@ -451,15 +451,23 @@ const authSlice = createSlice({
         } else {
           state.error = "An error occurred";
         }
+      })
+      .addCase(addVaccinationAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(addVaccinationAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        console.log(action.payload);
+      })
+      .addCase(addVaccinationAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
       });
-
-
-    
-    
-    
-    
-    
-    
   },
 });
 
