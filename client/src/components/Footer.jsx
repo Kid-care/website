@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <>
       <footer className=" w-full relative  " dir="rtl">
-        <div className="bg-[#ffff] flex justify-around items-center z-999 border-2 border-[#00000059] p-3  ">
+        <div className="bg-[#ffff] flex justify-around items-center z-999 border-t-2 border-t-[#00000059] p-3  ">
           <div className="flex items-center gap-x-8 mr-20">
             <NavLink to="/instagram" target="_blank">
               <img src={instagram} alt="instagram" />

@@ -97,6 +97,8 @@ function AppLayout({ isAuthenticated, userRole, setIsAuthenticated }) {
     );
   }
 
+
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -119,7 +121,7 @@ function AppLayout({ isAuthenticated, userRole, setIsAuthenticated }) {
           <Route path="/FamilyRegistry" element={<FamilyRegistry />} />
           <Route
             path="/CompleteExamination"
-            element={<CompleteExamination />}
+            element={<CompleteExamination userRole={userRole} />}
           />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/ChatBot" element={<ChatBot />} />

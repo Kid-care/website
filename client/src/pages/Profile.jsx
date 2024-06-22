@@ -174,8 +174,8 @@ const Profile = () => {
           </div>
 
           {/* Main Content */}
-          <div dir="rtl" className="p-20 mt-16 ">
-            <main className="bg-gradient-to-r from-[#28CC2F1F] to-[#28CC9E33] rounded-[20px] w-[1230px] h-[700px] flex flex-col justify-around">
+          <div dir="rtl" className=" mt-12  pt-10 p-1 ">
+            <main className="bg-gradient-to-r from-[#28CC2F1F] to-[#28CC9E33] rounded-[20px] w-[1230px] h-[650px] flex flex-col justify-around pt-2 mt-10">
               <div className="p-6 m-5">
                 <div>
                   <h1 className="text-center text-[22px] leading-[20px] tracking-[0.25px] text-[#000000] font-[Roboto] font-semibold">
@@ -234,7 +234,7 @@ const Profile = () => {
                               setBirthdate({ ...birthdate, day: updatedValue })
                             }
                             width="90px"
-                            borderWidth="200px"
+                            borderWidth="90px"
                           />
                         </div>
                         <div>
@@ -309,7 +309,7 @@ const Profile = () => {
             </main>
           </div>
         </div>
-        <footer>
+        <footer className="mt-14">
           <Footer />
         </footer>
       </main>

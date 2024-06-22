@@ -189,10 +189,47 @@ export const addVaccinationAsync = createAsyncThunk(
   }
 );
 
+export const postPhotoAsync = createAsyncThunk(
+  "photos/postPhoto",
+  async ({ token, photo }, { rejectWithValue }) => {
+    try {
+      const response = await authService.postPhoto(token, photo);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getPhotosAsync = createAsyncThunk(
+  "photos/getPhotos",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await authService.getPhotos(token);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getPhotosAdminAsync = createAsyncThunk(
+  "photos/getPhotosAdmin",
+  async ({ token, id }, { rejectWithValue }) => {
+    try {
+      const response = await authService.getPhotosAdmin(token, id);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: localStorage.getItem("token") || "",
+    isAdmin: false,
     user: {},
     admins: [],
     userCount: 0,
@@ -206,6 +243,8 @@ const authSlice = createSlice({
       state.token = "";
       state.user = {};
       state.admins = [];
+      state.photos = [];
+
       state.userCount = 0;
       state.adminCount = 0;
       state.ageGroups = {};
@@ -221,7 +260,11 @@ const authSlice = createSlice({
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         state.loading = "idle";
+        if (action.payload.user.roles === "admin") {
+          state.isAdmin = true;
+          state.token = action.payload.user.token;
 
+        }
         console.log(action.payload);
       })
       .addCase(loginAsync.rejected, (state, action) => {
@@ -467,6 +510,45 @@ const authSlice = createSlice({
         } else {
           state.error = "An error occurred";
         }
+      })
+
+      .addCase(postPhotoAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(postPhotoAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.photos = action.payload.photos;
+      })
+      .addCase(postPhotoAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        state.error = action.payload || "An error occurred";
+      })
+
+      .addCase(getPhotosAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(getPhotosAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.photos = action.payload.photos;
+      })
+      .addCase(getPhotosAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        state.error = action.payload || "An error occurred";
+      })
+
+      .addCase(getPhotosAdminAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(getPhotosAdminAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.photos = action.payload;
+      })
+      .addCase(getPhotosAdminAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        state.error = action.payload || "An error occurred";
       });
   },
 });

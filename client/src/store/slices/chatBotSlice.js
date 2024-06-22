@@ -6,8 +6,16 @@ export const sendChatMessageAsync = createAsyncThunk(
   "chat/sendMessage",
   async (message) => {
     const response = await axios.post(
-      "https://flask-api-yog1.onrender.com/get_response",
-      { msg: message }
+      "https://gemini-chatbot-8c18.onrender.com/chat",
+      { msg: message },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          "Content-Type":"application/json",
+        },
+
+      }
     );
     return response.data.response;
   }
