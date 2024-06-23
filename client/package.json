@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@material-tailwind/react": "^2.1.9",
+    "@mui/material": "^5.15.20",
     "@reduxjs/toolkit": "^2.2.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -21,6 +24,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.4",
     "redux": "^5.0.1",
+    "swiper": "^11.1.4",
     "tw-elements": "^2.0.0",
     "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
@@ -50,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "tailwindcss": "^3.4.1"
   }
 }

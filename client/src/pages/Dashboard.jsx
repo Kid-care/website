@@ -65,7 +65,7 @@ const Dashboard = () => {
   });
   const tableContainerRef = useRef(null);
 
-  const { admins, userCount, adminCount, token, ageGroups, loading, error } =
+  const { admins, userCount, adminCount, ageGroups, loading} =
     useSelector((state) => state.auth);
 
   useEffect(() => {

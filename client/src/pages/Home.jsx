@@ -3,6 +3,8 @@ import Footer from "../components/Footer";
 import Content from "../components/homeSections/Content";
 import Navbar from "../components/Navbar";
 const Home = () => {
+
+
   return (
     <>
       <div>
