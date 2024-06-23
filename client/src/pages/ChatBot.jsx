@@ -4,7 +4,6 @@ import { sendChatMessageAsync } from "../store/slices/chatBotSlice";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal.jsx";
 import info from "../assets/info.svg";
-import record from "../assets/record.svg";
 import imageUrl from "../assets/Chat bot-bro 1.svg";
 import send from "../assets/send.svg";
 import robot from "../assets/Robot.svg";
