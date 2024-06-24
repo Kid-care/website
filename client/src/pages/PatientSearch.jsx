@@ -14,6 +14,7 @@ const PatientSearch = () => {
     console.log(response);
     if (response.status === true) {
       localStorage.setItem("patientID", response.user._id);
+      
       navigate("/");
     }
   };

@@ -17,7 +17,7 @@ const Navbar = () => {
   const isHomePage = location.pathname === "/";
 
   return (
-    <nav className={`w-full fixed top-0 z-50  ${isHomePage || isProfilePage ? "bg-transparent" : "bg-gradient-to-r  from-[#28CC2F2E] to-[#28CC9E4D] rounded-b-[35px]  "} `}>
+    <nav className={`w-full z-50 fixed top-0 z-50  ${isHomePage || isProfilePage ? "bg-transparent" : "bg-gradient-to-r  from-[#28CC2F2E] to-[#28CC9E4D] rounded-b-[35px]  "} `}>
       <div className="flex items-center justify-around px-4 ">
         <div>
           <NavLink to="/" dir="rtl">

@@ -139,28 +139,8 @@ const Dashboard = () => {
     }
   };
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "نسبة المشاهدات",
-      },
-    },
-  };
-  const viewData = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-      {
-        label: "Viewers",
-        data: [120, 190, 300, 500, 200, 300],
-        backgroundColor: "#28CC9E",
-      },
-    ],
-  };
+ 
+  
 
   const ageData = {
     labels: ["0-18", "19-35", "36-60", "Other"],
@@ -281,7 +261,7 @@ const Dashboard = () => {
         <div className="p-6 bg-[#28CC9E4D] h-[95vh] rounded-[20px]">
           {loading === "pending" && <p className="animate-pulse">Loading...</p>}
           <div className="flex justify-around" dir="rtl">
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-8 mt-[-20px]">
               <div>
                 <img
                   src={Logout}
@@ -290,17 +270,17 @@ const Dashboard = () => {
                   onClick={openLogoutModal}
                 />
               </div>
-              <div className="flex gap-x-5  " dir="rtl">
-                <div className="bg-[#FFFFFF] p-4 shadow w-[200px] h-[163px] rounded-[20px] text-center">
-                  <h2 className="text-2xl font-bold text-center mt-7">
+              <div className="flex  flex-col gap-y-8  " dir="rtl">
+                <div className="bg-[#FFFFFF]  shadow w-[414px] h-[164px] rounded-[20px] text-center">
+                  <h2 className="text-[30px] font-bold text-center mt-5">
                     {adminCount}
                   </h2>
                   <h2 className="text-[#000000] font-semibold text-[24px] leading-[29.05px] mt-9">
                     الاطباء
                   </h2>
                 </div>
-                <div className="bg-[#FFFFFF] p-4 shadow w-[200px] h-[163px] rounded-[20px] text-center">
-                  <h2 className="text-2xl font-bold text-center mt-7">
+                <div className="bg-[#FFFFFF]  shadow w-[414px] h-[164px] rounded-[20px] text-center">
+                  <h2 className="text-[30px] font-bold text-center mt-5">
                     {userCount}
                   </h2>
                   <h2 className="text-[#000000] font-semibold text-[24px] leading-[29.05px] mt-9">
@@ -308,13 +288,7 @@ const Dashboard = () => {
                   </h2>
                 </div>
               </div>
-              <div className="bg-[#FFFFFF] w-[414px] h-[264.06px] rounded-[20px] ">
-                <h2 className="flex justify-center p-4 text-[#1C1C1C] font-semibold text-[18px] leading-[20px]">
-                  {" "}
-                  نسبة المشاهدات
-                </h2>
-                <Bar data={viewData} options={options} />
-              </div>
+
               <div className="bg-[#FFFFFF] w-[414px] h-[264.06px] rounded-[20px] ">
                 <div className="p-2">
                   <h2 className="flex justify-center p-2 text-[#1C1C1C] font-semibold text-[18px] leading-[20px]">
