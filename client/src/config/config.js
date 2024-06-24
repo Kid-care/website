@@ -132,7 +132,7 @@ const authService = {
     return response.data.admins;
   },
 
-  addVaccination: async ( id, name) => {
+  addVaccination: async (id, name) => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/v1/Item/create_Item`,
@@ -143,6 +143,53 @@ const authService = {
           },
         }
       );
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  },
+  getPhotosAdmin: async (token, id) => {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/getPhotosAdmin`, {
+      headers: {
+        Authorization: token,
+        id: id,
+      },
+    });
+    return response.data;
+  },
+  getPhotos: async (token) => {
+    const response = await axios.get(`${API_BASE_URL}/api/v1/getPhotos`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    return response.data;
+  },
+  postPhoto: async (token, photo) => {
+    const formData = new FormData();
+    formData.append("photo", photo);
+
+    const response = await axios.post(
+      `${API_BASE_URL}/api/v1/postPhoto`,
+      formData,
+      {
+        headers: {
+          Authorization: token,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  },
+
+  getUserData: async (token, id) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/v1/getUserData`, {
+        headers: {
+          Authorization: token,
+          id: id,
+        },
+      });
       return response.data;
     } catch (error) {
       throw error.response.data;

@@ -69,14 +69,14 @@ export const sendDataToBackendAsync = createAsyncThunk(
 
 export const getDataFromBackendAsync = createAsyncThunk(
   "auth/getDataFromBackend",
-  async (_, { getState }) => {
+  async (token, { getState }) => {
     try {
-      const token = getState().auth.token;
-      const user = getState().auth.user;
+      // const token = getState().auth.token;
+      // const user = getState().auth.user;
 
       const response = await authService.getDataFromBackendToBrofile(
         token,
-        user
+        // account.user
       );
 
       return response.user;
@@ -85,6 +85,7 @@ export const getDataFromBackendAsync = createAsyncThunk(
     }
   }
 );
+
 
 // Dashboard thunks...
 
@@ -190,11 +191,67 @@ export const addVaccinationAsync = createAsyncThunk(
     }
   }
 );
+export const getPhotosAdminAsync = createAsyncThunk(
+  "photos/getPhotosAdmin",
+  async ({ token, id }, { rejectWithValue }) => {
+    console.log(token)
+    console.log(id)
+    try {
+      const response = await authService.getPhotosAdmin(token, id);
+     
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const getPhotosAsync = createAsyncThunk(
+  "photos/getPhotos",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await authService.getPhotos(token);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const postPhotoAsync = createAsyncThunk(
+  "photos/postPhoto",
+  async ({ token, photo }, { rejectWithValue }) => {
+    try {
+      const response = await authService.postPhoto(token, photo);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+export const getUserDataAsync = createAsyncThunk(
+  "auth/getUserData",
+  async ({ token, id }, { rejectWithValue }) => {
+        console.log(token);
+        console.log(id);
+    try {
+      const response = await authService.getUserData(token, id);
+            console.log(response);
+
+      return response.user;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: localStorage.getItem("token") || "",
+    isAdmin: false,
+
     user: {},
     admins: [],
     userCount: 0,
@@ -207,6 +264,8 @@ const authSlice = createSlice({
     logout: (state) => {
       state.token = "";
       state.user = {};
+      state.photos = [];
+
       state.admins = [];
       state.userCount = 0;
       state.adminCount = 0;
@@ -214,6 +273,10 @@ const authSlice = createSlice({
       state.loading = "idle";
       state.error = null;
     },
+    setToken: (state,action) => {
+      state.token = action.payload;
+    
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -469,10 +532,65 @@ const authSlice = createSlice({
         } else {
           state.error = "An error occurred";
         }
+      })
+      .addCase(postPhotoAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(postPhotoAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.photos = action.payload.photos;
+      })
+      .addCase(postPhotoAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        state.error = action.payload || "An error occurred";
+      })
+
+      .addCase(getPhotosAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(getPhotosAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.photos = action.payload.photos;
+      })
+      .addCase(getPhotosAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        state.error = action.payload || "An error occurred";
+      })
+
+      .addCase(getPhotosAdminAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(getPhotosAdminAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.photos = action.payload;
+      })
+      .addCase(getPhotosAdminAsync.rejected, (state, action) => {
+        state.loading = "idle";
+        state.error = action.payload || "An error occurred";
+      })
+      .addCase(getUserDataAsync.pending, (state) => {
+        state.loading = "pending";
+        state.error = null;
+      })
+      .addCase(getUserDataAsync.fulfilled, (state, action) => {
+        state.loading = "idle";
+        state.user = action.payload;
+      })
+      .addCase(getUserDataAsync.rejected, (state, action) => {
+        state.loading = "idle";
+
+        if (action.error) {
+          state.error = action.error.message || "An error occurred";
+        } else {
+          state.error = "An error occurred";
+        }
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setToken } = authSlice.actions;
 
 export default authSlice.reducer;

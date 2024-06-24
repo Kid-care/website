@@ -9,7 +9,7 @@ const AddUser = ({ account }) => {
         <img src={addUserIcon} alt="user" className="w-[22.35px] h-[24.09px]" />
       </div>
       <h3 className="text-[#000000CC] text-[16px] leading-[20px] tracking-[0.25px]">
-        {account.userName}
+        {account.email}
       </h3>
     </div>
   );

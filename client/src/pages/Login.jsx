@@ -88,22 +88,47 @@ const Login = ({ setIsAuthenticated }) => {
 
     try {
       const response = await dispatch(loginAsync(userData));
-      console.log(response);
 
       if (response.payload && response.payload.status === true) {
-        localStorage.setItem("token", response.payload.token);
-        localStorage.setItem("role", response.payload.user.roles);
-        localStorage.setItem("patientID", response.payload.user._id); // Save user role
-        setIsAuthenticated(true);
-        if (response.payload.user.roles === "admin") {
-          navigate("/patient-search");
+        // data of user is received here
+        const currentUser = {
+          ...response.payload.user,
+          token: response.payload.token,
+        };
+
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+        const existingAccounts = localStorage.getItem("accounts");
+
+        if (!existingAccounts) {
+          localStorage.setItem("accounts", JSON.stringify([currentUser]));
         } else {
-          navigate("/");
+          const accounts = JSON.parse(existingAccounts);
+          const isAccountExist = accounts.some(
+            (account) => account.email === userData.email
+          );
+
+          if (!isAccountExist) {
+            localStorage.setItem(
+              "accounts",
+              JSON.stringify([...accounts, currentUser])
+            );
+          }
         }
-        // window.location.reload();
+
+        localStorage.setItem("token", response.payload.token);
+        localStorage.setItem("role", response.payload.user.roles); // Save user role
+
+        setIsAuthenticated(true);
+        navigate("/");
       } else if (response.payload && response.payload.status === false) {
         openModal(response.payload.message || "فشل تسجيل الدخول");
-      } else if (response.error && response.error.response && response.error.response.data && response.error.response.data.errors) {
+      } else if (
+        response.error &&
+        response.error.response &&
+        response.error.response.data &&
+        response.error.response.data.errors
+      ) {
         const errorMessages = response.error.response.data.errors;
         openModal(errorMessages.join("\n"));
       } else {
@@ -124,20 +149,52 @@ const Login = ({ setIsAuthenticated }) => {
 
         <div className="flex flex-nowrap flex-col flex-1 relative">
           <NavLink to="/" dir="rtl">
-            <img src={Logo} alt="Logo" className="right-[60px] mt-2 w-24 absolute" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="right-[60px] mt-2 w-24 absolute"
+            />
           </NavLink>
           <div className=" flex flex-col justify-center items-center h-full mt-8">
-            <form className="absolute w-[400px] mt-5 mr-9 flex flex-col gap-y-2 " method="POST">
-              <h1 className="font-bold text-2xl mb-1 text-[#132F2B] tracking-wide" dir="rtl">
+            <form
+              className="absolute w-[400px] mt-5 mr-9 flex flex-col gap-y-2 "
+              method="POST">
+              <h1
+                className="font-bold text-2xl mb-1 text-[#132F2B] tracking-wide"
+                dir="rtl">
                 تسجيل الدخول بالبريد الالكتروني
               </h1>
 
               <div className="">
-                <div className="py-1">{inputTouched["email"] && formErrors.email && <span className="text-[#CC2828] text-sm ">{formErrors.email}</span>}</div>
+                <div className="py-1">
+                  {inputTouched["email"] && formErrors.email && (
+                    <span className="text-[#CC2828] text-sm ">
+                      {formErrors.email}
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
-                  <input type="text" placeholder={inputFocus["email"] ? "" : "البريد الالكتروني"} name="email" value={userData.email} dir="rtl" onChange={handleChange} onKeyUp={validateForm} className={`cursor-pointer items-center border px-6  placeholder-[#132F2BCC]   ${inputTouched["email"] && formErrors.email ? "border-[#CC2828]" : "border-[#28CC9E]"} focus:border-[#28CC9E] w-full px-6 border-[#28CC9E] text-[#00000] leading-tight focus:outline-none focus:shadow-outline h-[55px]  rounded-xl tracking-wide text-lg`} onFocus={() => handleFocus("email")} onBlur={() => handleBlur("email")} />
+                  <input
+                    type="text"
+                    placeholder={inputFocus["email"] ? "" : "البريد الالكتروني"}
+                    name="email"
+                    value={userData.email}
+                    dir="rtl"
+                    onChange={handleChange}
+                    onKeyUp={validateForm}
+                    className={`cursor-pointer items-center border px-6  placeholder-[#132F2BCC]   ${
+                      inputTouched["email"] && formErrors.email
+                        ? "border-[#CC2828]"
+                        : "border-[#28CC9E]"
+                    } focus:border-[#28CC9E] w-full px-6 border-[#28CC9E] text-[#00000] leading-tight focus:outline-none focus:shadow-outline h-[55px]  rounded-xl tracking-wide text-lg`}
+                    onFocus={() => handleFocus("email")}
+                    onBlur={() => handleBlur("email")}
+                  />
                   {(inputFocus["email"] || userData.email) && (
-                    <label dir="rtl" htmlFor="email" className={`absolute right-1 transform -translate-y-full text-[#132F2BCC] bg-slate-50 m-3 text-base transition-opacity duration-200`}>
+                    <label
+                      dir="rtl"
+                      htmlFor="email"
+                      className={`absolute right-1 transform -translate-y-full text-[#132F2BCC] bg-slate-50 m-3 text-base transition-opacity duration-200`}>
                       البريد الالكتروني
                     </label>
                   )}
@@ -145,14 +202,59 @@ const Login = ({ setIsAuthenticated }) => {
               </div>
 
               <div className="">
-                <div className="py-1">{inputTouched["password"] && formErrors.password && <span className="text-[#CC2828] text-sm ">{formErrors.password}</span>}</div>
+                <div className="py-1">
+                  {inputTouched["password"] && formErrors.password && (
+                    <span className="text-[#CC2828] text-sm ">
+                      {formErrors.password}
+                    </span>
+                  )}
+                </div>
                 <div className="relative">
-                  <span onClick={handleTogglePassword} role="button" tabIndex={0} className="absolute top-1/2 left-4 transform -translate-y-1/2 cursor-pointer" aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}>
-                    {showPassword ? <img src={openEye} alt="show password" width="25px" height="25px" /> : <img src={closeEye} alt="close password" width="25px" height="25px" />}
+                  <span
+                    onClick={handleTogglePassword}
+                    role="button"
+                    tabIndex={0}
+                    className="absolute top-1/2 left-4 transform -translate-y-1/2 cursor-pointer"
+                    aria-label={
+                      showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
+                    }>
+                    {showPassword ? (
+                      <img
+                        src={openEye}
+                        alt="show password"
+                        width="25px"
+                        height="25px"
+                      />
+                    ) : (
+                      <img
+                        src={closeEye}
+                        alt="close password"
+                        width="25px"
+                        height="25px"
+                      />
+                    )}
                   </span>
-                  <input type={showPassword ? "text" : "password"} placeholder={inputFocus["password"] ? "" : "الرقم السري"} name="password" value={userData.password} dir="rtl" onChange={handleChange} onKeyUp={validateForm} className={`cursor-pointer items-center border px-6  placeholder-[#132F2BCC]   ${inputTouched["password"] && formErrors.password ? "border-[#CC2828]" : "border-[#28CC9E]"} focus:border-[#28CC9E] w-full px-6 border-[#28CC9E] text-[#00000] leading-tight focus:outline-none focus:shadow-outline h-[55px]  rounded-xl tracking-wide text-lg`} onFocus={() => handleFocus("password")} onBlur={() => handleBlur("password")} />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder={inputFocus["password"] ? "" : "الرقم السري"}
+                    name="password"
+                    value={userData.password}
+                    dir="rtl"
+                    onChange={handleChange}
+                    onKeyUp={validateForm}
+                    className={`cursor-pointer items-center border px-6  placeholder-[#132F2BCC]   ${
+                      inputTouched["password"] && formErrors.password
+                        ? "border-[#CC2828]"
+                        : "border-[#28CC9E]"
+                    } focus:border-[#28CC9E] w-full px-6 border-[#28CC9E] text-[#00000] leading-tight focus:outline-none focus:shadow-outline h-[55px]  rounded-xl tracking-wide text-lg`}
+                    onFocus={() => handleFocus("password")}
+                    onBlur={() => handleBlur("password")}
+                  />
                   {(inputFocus["password"] || userData.password) && (
-                    <label dir="rtl" htmlFor="password" className={`absolute right-1 transform -translate-y-full text-[#132F2BCC] bg-slate-50 m-3 text-base transition-opacity duration-200`}>
+                    <label
+                      dir="rtl"
+                      htmlFor="password"
+                      className={`absolute right-1 transform -translate-y-full text-[#132F2BCC] bg-slate-50 m-3 text-base transition-opacity duration-200`}>
                       الرقم السري
                     </label>
                   )}
@@ -161,15 +263,25 @@ const Login = ({ setIsAuthenticated }) => {
 
               <div className="flex flex-col ">
                 <div dir="rtl" className="flex flex-row items-center mb-6 ">
-                  <Link className="inline-block align-baseline text-[#132F2BB2] tracking-wide text-lg" to="/ForgetPassword">
+                  <Link
+                    className="inline-block align-baseline text-[#132F2BB2] tracking-wide text-lg"
+                    to="/ForgetPassword">
                     نسيت الرقم السري ؟
                   </Link>
                 </div>
                 <div className="flex flex-col space-y-6">
-                  <button className="bg-[#196B69] focus:outline-none focus:shadow-outline h-[60px] w-full rounded-2xl text-[#FFFFFF] tracking-wider text-xl" type="button" dir="rtl" onClick={handleLogin}>
+                  <button
+                    className="bg-[#196B69] focus:outline-none focus:shadow-outline h-[60px] w-full rounded-2xl text-[#FFFFFF] tracking-wider text-xl"
+                    type="button"
+                    dir="rtl"
+                    onClick={handleLogin}>
                     تسجيل الدخول
                   </button>
-                  <button className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-full rounded-2xl text-[#132F2B] tracking-wider text-xl" type="button" dir="rtl" onClick={() => navigate("/Register1")}>
+                  <button
+                    className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-full rounded-2xl text-[#132F2B] tracking-wider text-xl"
+                    type="button"
+                    dir="rtl"
+                    onClick={() => navigate("/Register1")}>
                     إنشاء حساب
                   </button>
                 </div>
