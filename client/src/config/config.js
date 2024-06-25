@@ -65,7 +65,7 @@ const authService = {
 
   fetchUserStats: async (token) => {
     const response = await axios.get(
-      `${API_BASE_URL}/api/v1/owner/filterUser`,
+      "https://kid-care.onrender.com/api/v1/owner/filterUser",
       {
         headers: { Authorization: token },
       }

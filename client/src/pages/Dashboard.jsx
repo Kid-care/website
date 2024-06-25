@@ -65,8 +65,9 @@ const Dashboard = () => {
   });
   const tableContainerRef = useRef(null);
 
-  const { admins, userCount, adminCount, ageGroups, loading} =
-    useSelector((state) => state.auth);
+  const { admins, userCount, adminCount, ageGroups, loading } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     dispatch(fetchUserStatsAsync());
@@ -104,9 +105,9 @@ const Dashboard = () => {
       }));
     }
   };
-  const handleDeleteRaw = async (email,token) => {
+  const handleDeleteRaw = async (email, token) => {
     try {
-      await dispatch(deleteAdminAsync(email,token));
+      await dispatch(deleteAdminAsync(email, token));
       setAdminList((prevList) =>
         prevList.filter((admin) => admin.email !== email)
       );
@@ -138,9 +139,6 @@ const Dashboard = () => {
       // Handle error state if necessary
     }
   };
-
- 
-  
 
   const ageData = {
     labels: ["0-18", "19-35", "36-60", "Other"],
@@ -213,8 +211,6 @@ const Dashboard = () => {
     setEditingAdminId(id);
   };
 
- 
-
   const getCellClass = (id) => {
     return editingAdminId === id
       ? "py-5 text-center ml-10"
@@ -258,7 +254,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="m-5 bg-[#FFFFFF] max-h-screen">
-        <div className="p-6 bg-[#28CC9E4D] h-[95vh] rounded-[20px]">
+        <div className="p-8 bg-[#28CC9E4D] h-[95vh] rounded-[20px]">
           {loading === "pending" && <p className="animate-pulse">Loading...</p>}
           <div className="flex justify-around" dir="rtl">
             <div className="flex flex-col gap-8 mt-[-20px]">
@@ -266,26 +262,30 @@ const Dashboard = () => {
                 <img
                   src={Logout}
                   alt="logout"
-                  className="ml-6 cursor-pointer "
+                  className="ml-7 cursor-pointer "
                   onClick={openLogoutModal}
                 />
               </div>
               <div className="flex  flex-col gap-y-8  " dir="rtl">
-                <div className="bg-[#FFFFFF]  shadow w-[414px] h-[164px] rounded-[20px] text-center">
-                  <h2 className="text-[30px] font-bold text-center mt-5">
-                    {adminCount}
-                  </h2>
-                  <h2 className="text-[#000000] font-semibold text-[24px] leading-[29.05px] mt-9">
-                    الاطباء
-                  </h2>
+                <div className="bg-[#FFFFFF]  shadow w-[414px] h-[164px] rounded-[20px] text-center flex justify-around items-center ">
+                  <div className="flex flex-col gap-4">
+                    <h2 className="text-[30px] font-bold text-center ">
+                      {adminCount}
+                    </h2>
+                    <h2 className="text-[#000000] font-semibold text-[24px] leading-[29.05px] ">
+                      الاطباء
+                    </h2>
+                  </div>
                 </div>
-                <div className="bg-[#FFFFFF]  shadow w-[414px] h-[164px] rounded-[20px] text-center">
-                  <h2 className="text-[30px] font-bold text-center mt-5">
-                    {userCount}
-                  </h2>
-                  <h2 className="text-[#000000] font-semibold text-[24px] leading-[29.05px] mt-9">
-                    المستخدمين
-                  </h2>
+                <div className="bg-[#FFFFFF]  shadow w-[414px] h-[164px] rounded-[20px] text-center flex justify-around items-center">
+                  <div className="flex flex-col gap-4">
+                    <h2 className="text-[30px] font-bold text-center ">
+                      {userCount}
+                    </h2>
+                    <h2 className="text-[#000000] font-semibold text-[24px] leading-[29.05px] ">
+                      المستخدمين
+                    </h2>
+                  </div>
                 </div>
               </div>
 
@@ -302,7 +302,7 @@ const Dashboard = () => {
                         0-18
                       </span>
                       <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
-                        {ageGroups["0-18"]}
+                        {Math.ceil((ageGroups["0-18"] / userCount) * 100)}%
                       </span>
                     </div>
                     <div className="flex justify-around">
@@ -310,7 +310,7 @@ const Dashboard = () => {
                         19-35
                       </span>
                       <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
-                        {ageGroups["19-35"]}
+                        {Math.ceil((ageGroups["19-35"] / userCount) * 100)}%
                       </span>
                     </div>
                     <div className="flex justify-around">
@@ -318,7 +318,7 @@ const Dashboard = () => {
                         36-60
                       </span>
                       <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
-                        {ageGroups["36-60"]}
+                        {Math.ceil((ageGroups["36-60"] / userCount) * 100)}%
                       </span>
                     </div>
                     <div className="flex justify-around">
@@ -326,7 +326,10 @@ const Dashboard = () => {
                         Other
                       </span>
                       <span className="text-[#1C1C1C] text-[16px] leading-[18px] font-normal ">
-                        {ageGroups["61-infinity"]}
+                        {Math.ceil(
+                          (ageGroups["61-infinity"] / userCount) * 100
+                        )}
+                        %
                       </span>
                     </div>
                   </div>

@@ -65,10 +65,10 @@ const ChatBot = () => {
                 <div
                   dir="rtl"
                   key={index}
-                  className={`relative font-sans font-light rounded-[20px] text-[18px] leading-[35px] max-w-[700px]   tracking-[0.25px] p-7  ${
+                  className={`relative font-sans font-light rounded-[20px] text-[18px] leading-[35px] max-w-[700px]   tracking-[0.25px] p-5  ${
                     message.type === "user"
                       ? "bg-[#28CC9E4D] text-right mr-auto"
-                      : "bg-[#E6E6E6] text-right ml-auto "
+                      : "bg-[#ffff] text-right ml-auto "
                   }`}>
                   <div dir="rtl" className="absolute top-[-50px] left-0 ">
                     {message.type !== "user" && (
@@ -139,14 +139,14 @@ const ChatBot = () => {
 
       {showModal && (
         <Modal closeModal={closeModal} width="900px" height="450px">
-          <div className="flex items-center gap-8 " dir="rtl">
-            <div className="flex flex-col">
+          <div className="flex items-center gap-8  " dir="rtl">
+            <div className="flex flex-col gap-5 ">
               <h2 className="text-2xl font-bold mb-2">
                 {modalContent.paragraph1}
               </h2>
               <p className="text-lg">{modalContent.paragraph2}</p>
             </div>
-            <img src={imageUrl} alt="Chat bot" />
+            <img src={imageUrl} alt="Chat bot" className="mt-6" />
           </div>
         </Modal>
       )}
