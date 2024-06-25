@@ -53,7 +53,14 @@ const Content = () => {
                         تسجيل مريض اخر{" "}
                       </Link>
                     </div>
-                  ) : (
+                  ) :
+                    role === "owner" ? (
+                    <div className="flex justify-center">
+                      <Link to="Dashboard" className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-[400px] flex justify-center items-center  rounded-[20px] text-[#132F2B] tracking-wider text-xl" type="button" dir="rtl">
+الانتقال الي الداشبورد
+                        </Link>
+                    </div>
+                  ) :(
                     !loggedIN && (
                       <div className="flex gap-x-7">
                         <button className="bg-[#28CC9E] focus:outline-none focus:shadow-outline h-[60px] w-[400px]  rounded-[20px] text-[#132F2B] tracking-wider text-xl" type="button" dir="rtl" onClick={() => navigate("/Register1")}>
