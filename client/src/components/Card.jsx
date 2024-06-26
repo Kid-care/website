@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 const Card = ({ title, description, imageSrc1, imageSrc2, linkTo }) => {
   return (
     <>
@@ -15,7 +15,11 @@ const Card = ({ title, description, imageSrc1, imageSrc2, linkTo }) => {
           </div>
           <div>
             <Link to={linkTo}>
-              <img src={imageSrc1} alt="img-arraw" className='w-[44.25px] h-[45.24px]' />
+              <img
+                src={imageSrc1}
+                alt="img-arrrraw"
+                className="w-[44.25px] h-[45.24px]"
+              />
             </Link>
           </div>
         </div>
@@ -27,4 +31,4 @@ const Card = ({ title, description, imageSrc1, imageSrc2, linkTo }) => {
   );
 };
 
-export default Card
+export default Card;
