@@ -5,10 +5,9 @@ import axios from "axios";
 export const sendChatMessageAsync = createAsyncThunk(
   "chat/sendMessage",
   async (message) => {
-    const response = await axios.post(
-      "https://gemini-chatbot-8c18.onrender.com/chat",
-      { msg: message }
-    );
+    const response = await axios.post("http://3.129.148.71:5001/chat", {
+      msg: message,
+    });
     return response.data.response;
   }
 );
