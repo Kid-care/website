@@ -56,7 +56,7 @@ const MedicalHistory = () => {
   return (
     <>
       <Navbar />
-      <section dir="rtl" className="bg-[#f6f6f6] minHeight">
+      <section dir="rtl" className="bg-[#ffff] minHeight">
         <div className="mt-[100px] container mx-auto py-6 px-4">
           <h3 className="mt-[50px] mb-12 text-center font-semibold text-xl">الامراض المزمنة</h3>
           {loading1 ? <p className="text-center font-medium text-lg">جاري التحميل</p> : <Slider data={chronicList} className="mb-12" type="chronic" colors={{ bgColor: "#28CC9E4D", headerBg: "#FFFFFF", headerColor: "#196B69" }} />}

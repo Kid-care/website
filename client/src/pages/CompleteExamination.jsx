@@ -100,8 +100,8 @@ const CompleteExamination = ({ userRole }) => {
 
   if (!photos) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="m-auto">
+      <div className="flex justify-center items-center h-screen ">
+        <div className="m-auto ">
           <div role="status">
             <svg
               aria-hidden="true"

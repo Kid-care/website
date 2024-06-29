@@ -25,7 +25,12 @@ const FamilyRecord = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const response = await getData("Admin/getItemsByCategory", {}, "66266c65a068dc4d7041ba00", patientID);
+      const response = await getData(
+        "Admin/getItemsByCategory",
+        {},
+        "66266c65a068dc4d7041ba00",
+        patientID
+      );
       setList(response);
       setLoading(false);
     };
@@ -35,19 +40,23 @@ const FamilyRecord = () => {
   return (
     <>
       <Navbar />
-      <section className="bg-[#f6f6f6] minHeight">
-        <div className="mt-[100px] container mx-auto py-6 px-4 flex gap-12">
-          <div className="pt-12 basis-1/3">
+      <section className="bg-[#ffff] min-h-screen">
+        <div className="mt-[100px] container mx-auto py-6 px-4 flex flex-col md:flex-row gap-12">
+          <div className="pt-12 md:basis-1/3 flex justify-center md:justify-start">
             <img src={image} alt="" />
           </div>
-          <div className="pt-24 basis-2/3 flex flex-col gap-6">
+          <div className="pt-12 md:pt-24 md:basis-2/3 flex flex-col gap-6">
             {loading ? (
               <p className="text-right text-xl font-semibold">جاري التحميل</p>
             ) : (
               list.map((item, index) => (
                 <Accordion key={index} className="group">
-                  <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-                    <p className="text-right ml-auto font-semibold text-xl">{item.name}</p>
+                  <AccordionSummary
+                    aria-controls="panel1a-content"
+                    id="panel1a-header">
+                    <p className="text-right ml-auto font-semibold text-xl">
+                      {item.name}
+                    </p>
                   </AccordionSummary>
                   <AccordionDetails>
                     <div className="mb-4 flex items-center justify-end gap-2">
@@ -57,7 +66,9 @@ const FamilyRecord = () => {
                         <span>{item.name}</span>
                       </div>
                     </div>
-                    <p className="text-right ml-auto text-[#000000BF] text-lg">{item.advice}</p>
+                    <p className="text-right ml-auto text-[#000000BF] text-lg">
+                      {item.advice}
+                    </p>
                   </AccordionDetails>
                 </Accordion>
               ))
@@ -66,7 +77,9 @@ const FamilyRecord = () => {
               <div className="flex flex-col justify-end items-end">
                 <div>
                   <img className="max-w-[350px] mb-5" src={empty} alt="" />
-                  <p className="text-center text-lg font-semibold">لا يوجد سجلات حتى الآن</p>
+                  <p className="text-center text-lg font-semibold">
+                    لا يوجد سجلات حتى الآن
+                  </p>
                 </div>
               </div>
             )}
@@ -74,9 +87,9 @@ const FamilyRecord = () => {
           </div>
         </div>
       </section>
-      <div className="fixed bottom-[100px] left-[100px] z-50 py-3  bg-[#196B69] w-[82px] h-[82px] flex items-center justify-center rounded-full">
+      <div className="fixed bottom-4 left-4 md:bottom-[100px] md:left-[100px] z-50 py-3 bg-[#196B69] w-[82px] h-[82px] flex items-center justify-center rounded-full">
         <Link to="/ChatBot">
-          <img src={chatbot} className="  " alt="chatbot" />
+          <img src={chatbot} className=" " alt="chatbot" />
         </Link>
       </div>
       <Footer />

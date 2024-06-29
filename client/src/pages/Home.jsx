@@ -12,7 +12,7 @@ const Home = () => {
          <Navbar />
         </header>
         <Content/>
-        <footer>
+        <footer className="mt-10">
           <Footer />
         </footer>
       </div>

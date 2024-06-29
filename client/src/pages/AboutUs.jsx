@@ -1,5 +1,5 @@
 import React from "react";
-import Docotors from "../assets/Doctors-bro 1.svg";
+import Doctors from "../assets/Doctors-bro 1.svg";
 import Vector8 from "../assets/Vector (8).svg";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -18,14 +18,14 @@ const AboutUS = () => {
     <>
       <main className="flex flex-col justify-around gap-10">
         <Navbar />
-        <div dir="rtl" className="flex flex-col gap-5 justify-around  ">
-          <section className="w-full  flex flex-col gap-20  ">
-            <div className="flex justify-around w-full h-[25rem] items-center mt-32 ">
-              <div className="flex flex-col  text-center space-y-8">
-                <h1 className="text-[#000000] font-[Roboto] font-semibold text-[26px] leading-[20px] tracking-[0.25px] ">
+        <div dir="rtl" className="flex flex-col gap-5 justify-around">
+          <section className="w-full flex flex-col gap-20">
+            <div className="flex flex-col-reverse lg:flex-row justify-around w-full h-auto lg:h-[25rem] items-center mt-32">
+              <div className="flex flex-col text-center space-y-8 p-4 lg:p-0">
+                <h1 className="text-[#000000] font-[Roboto] font-semibold text-[26px] leading-[20px] tracking-[0.25px]">
                   اهتم بكل ما يخص صحتك معانا
                 </h1>
-                <p className="text-[#000000] font-[Roboto] text-[22px] font-medium	 leading-[33px] tracking-[0.25px] w-[829px] h-[193px]">
+                <p className="text-[#000000] font-[Roboto] text-[22px] font-medium leading-[33px] tracking-[0.25px] w-full lg:w-[829px]">
                   استجابةً للحاجة المتزايدة للرعاية الصحية المجتمعية الشاملة،
                   يسعى مشروعنا إلى توفير منصة سهلة الاستخدام. تمكّن هذه المنصة
                   الأفراد من جميع الأعمار من إدارة صحتهم بشكل استباقي، حيث توفر
@@ -34,18 +34,20 @@ const AboutUS = () => {
                   روبوت دردشة مخصص للإجابة على الاستفسارات الطبية للمستخدمين.
                 </p>
               </div>
-              <div dir="rtl" className="flex ">
+              <div
+                dir="rtl"
+                className="relative flex w-full lg:w-auto justify-center lg:justify-end p-4 lg:p-0">
                 <img src={Vector8} alt="vector" className="relative" />
-                <img src={Docotors} alt="imageDoctors" className="absolute" />
+                <img src={Doctors} alt="imageDoctors" className="absolute" />
               </div>
             </div>
             <div>
-              <div className="bg-[#28CC9E4D] w-full h-[303px] flex flex-col justify-around">
-                <div className=" gap-10 flex flex-col items-center justify-center  ">
-                  <h2 className="text-center text-[#000000] font-[Roboto]  font-semibold text-[28px] leading-[33px] tracking-[0.25px] ">
+              <div className="bg-[#28CC9E4D] w-full h-auto lg:h-[303px] flex flex-col justify-around p-4 lg:p-0">
+                <div className="gap-10 flex flex-col items-center justify-center">
+                  <h2 className="text-center text-[#000000] font-[Roboto] font-semibold text-[28px] leading-[33px] tracking-[0.25px]">
                     هدفنا
                   </h2>
-                  <p className="text-center text-[#000000] font-[Roboto] font-medium	 text-[22px] leading-[33px] tracking-[0.25px] w-[929px] h-[86px]">
+                  <p className="text-center text-[#000000] font-[Roboto] font-medium text-[22px] leading-[33px] tracking-[0.25px] w-full lg:w-[929px]">
                     يهدف مشروعنا إلى إحداث ثورة في إمكانية الوصول إلى الرعاية
                     الصحية من خلال تقديم نهج شامل. من خلال تسهيل إدارة الصحة
                     الشخصية من خلال الميزات المتقدمة، نسعى إلى تمكين الأفراد من
@@ -55,15 +57,15 @@ const AboutUS = () => {
               </div>
             </div>
           </section>
-          <section dir="rtl" className=" w-full flex flex-col justify-evenly  ">
+          <section dir="rtl" className="w-full flex flex-col justify-evenly">
             <div
               dir="rtl"
               className="flex flex-col items-center justify-center mb-5">
               <h2 className="text-center font-[Roboto] font-semibold text-[26px] tracking-[0.25px] leading-[20px] p-14 text-[#000000]">
                 فريق العمل
               </h2>
-              <div dir="rtl" className="flex flex-col space-y-10  ">
-                <div className="flex gap-x-28">
+              <div dir="rtl" className="flex flex-col space-y-10 p-4 lg:p-0">
+                <div className="flex flex-wrap justify-center gap-10 lg:gap-x-28">
                   <WorkTeam
                     name="Alaa shokry"
                     image={Alaa}
@@ -93,7 +95,7 @@ const AboutUS = () => {
                     github="https://github.com/EsraaSyam"
                   />
                 </div>
-                <div className="flex gap-x-28">
+                <div className="flex flex-wrap justify-center gap-10 lg:gap-x-28">
                   <WorkTeam
                     name="Abdelfatah Mohamed"
                     image={Abdelfatah}
@@ -105,7 +107,7 @@ const AboutUS = () => {
                     name="Sherry ahmos"
                     image={Sherry}
                     linkedIn="https://www.linkedin.com/in/sherry-ahmos-413a02222/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-                    email="sherry.ahmos@gmail.com "
+                    email="sherry.ahmos@gmail.com"
                     github="https://github.com/sherryahmos473"
                   />
                   <WorkTeam

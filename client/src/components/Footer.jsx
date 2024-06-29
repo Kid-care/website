@@ -1,4 +1,3 @@
-// Footer.jsx
 import React from "react";
 import instagram from "../assets/instagram.svg";
 import facebook from "../assets/facebook.svg";
@@ -9,9 +8,9 @@ import { NavLink } from "react-router-dom";
 const Footer = () => {
   return (
     <>
-      <footer className=" w-full relative  " dir="rtl">
-        <div className="bg-[#ffff] flex justify-around items-center z-999 border-2 border-[#00000059] p-3  ">
-          <div className="flex items-center gap-x-8 mr-20">
+      <footer className="w-full z-50 relative" dir="rtl">
+        <div className="bg-[#ffff] flex flex-col md:flex-row justify-around items-center border-2 sm:p-8 border-[#00000059] p-3 space-y-4 md:space-y-0">
+          <div className="flex items-center gap-x-8 md:mr-20">
             <NavLink to="/instagram" target="_blank">
               <img src={instagram} alt="instagram" />
             </NavLink>
@@ -28,8 +27,8 @@ const Footer = () => {
           <div>
             <NavLink
               to="/AboutUs"
-              className="text-[#196B69] text-[18px] leading-[20px] tracking-[0.25px] font-[Roboto] font-semibold	">
-              <p> معلومات عنا</p>
+              className="text-[#196B69] text-[18px] leading-[20px] tracking-[0.25px] font-[Roboto] font-semibold">
+              <p>معلومات عنا</p>
             </NavLink>
           </div>
         </div>
