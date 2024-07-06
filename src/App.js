@@ -1,36 +1,38 @@
-// App.js
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
-import Login from "./pages/Login";
+
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+// App.js
+import React, { useEffect, useState } from "react";
+
+import AboutUs from "./pages/AboutUs.jsx";
+import BabyVaccinationType from "./pages/BabyVaccinationType.jsx";
+import BabyVaccinations from "./pages/BabyVaccinations.jsx";
+import ChatBot from "./pages/ChatBot.jsx";
+import CompleteExamination from "./pages/CompleteExamination";
+import Dashboard from "./pages/Dashboard.jsx";
+import DoctorVaccines from "./pages/DoctorVaccines.jsx";
+import EpidemicVaccinationType from "./pages/EpidemicVaccinationType.jsx";
+import EpidemicVaccinations from "./pages/EpidemicVaccinations.jsx";
+import FamilyRecord from "./pages/FamilyRecord.jsx";
+import FamilyRegistry from "./pages/FamilyRegistry";
 import ForgetPassword from "./pages/ForgetPassword";
-import ResetPassword from "./pages/ResetPassword";
+import { HashRouter } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import MedicalHistory from "./pages/MedicalHistory";
+import PatientSearch from "./pages/PatientSearch.jsx";
+import PregnantVaccinationType from "./pages/PregnantVaccinationType.jsx";
+import PregnantVaccinations from "./pages/PregnantVaccinations.jsx";
+import PreviousVaccinations from "./pages/PreviousVaccinations.jsx";
+import Profile from "./pages/Profile";
+import { Provider } from "react-redux";
 import Register1 from "./pages/Register1";
 import Register2 from "./pages/Register2";
-import MedicalHistory from "./pages/MedicalHistory";
-import Vaccinations from "./pages/Vaccinations";
-import FamilyRegistry from "./pages/FamilyRegistry";
-import CompleteExamination from "./pages/CompleteExamination";
-import Profile from "./pages/Profile";
-import AboutUs from "./pages/AboutUs.jsx";
-import ChatBot from "./pages/ChatBot.jsx";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard.jsx";
-import Vaccines from "./pages/Vaccines.jsx";
-import PreviousVaccinations from "./pages/PreviousVaccinations.jsx";
-import BabyVaccinations from "./pages/BabyVaccinations.jsx";
-import PregnantVaccinations from "./pages/PregnantVaccinations.jsx";
-import TravelVaccinations from "./pages/TravelVaccinations.jsx";
-import EpidemicVaccinations from "./pages/EpidemicVaccinations.jsx";
-import PatientSearch from "./pages/PatientSearch.jsx";
-import DoctorVaccines from "./pages/DoctorVaccines.jsx";
-import FamilyRecord from "./pages/FamilyRecord.jsx";
-import BabyVaccinationType from "./pages/BabyVaccinationType.jsx";
-import PregnantVaccinationType from "./pages/PregnantVaccinationType.jsx";
+import ResetPassword from "./pages/ResetPassword";
 import TravelVaccinationType from "./pages/TravelVaccinationType.jsx";
-import EpidemicVaccinationType from "./pages/EpidemicVaccinationType.jsx";
-
-import { Provider } from "react-redux";
+import TravelVaccinations from "./pages/TravelVaccinations.jsx";
+import Vaccinations from "./pages/Vaccinations";
+import Vaccines from "./pages/Vaccines.jsx";
 import { store } from "./store/store";
 
 function App() {
@@ -52,9 +54,11 @@ function App() {
 
   return (
     <Provider store={store}>
-      <BrowserRouter>
+      <HashRouter
+        future={{ v7_startTransition: true }}
+      >
         <AppLayout isAuthenticated={isAuthenticated} userRole={userRole} setIsAuthenticated={setIsAuthenticated} />
-      </BrowserRouter>
+      </HashRouter>
     </Provider>
   );
 }

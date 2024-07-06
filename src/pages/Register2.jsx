@@ -1,29 +1,30 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { registerAsync } from "../store/slices/authSlice";
-import Register2Img from "../assets/Blood donation-amico 2.svg";
-import Logo from "../assets/LOGO.svg";
-import Oblus from "../assets/O+.svg";
-import Ominus from "../assets/O-.svg";
+import { useEffect, useState } from "react";
+
+import ABblus from "../assets/AB+.svg";
+import ABminus from "../assets/AB-.svg";
 import Ablus from "../assets/A+.svg";
 import Aminus from "../assets/A-.svg";
 import Bblus from "../assets/B+.svg";
 import Bminus from "../assets/B-.svg";
-import ABblus from "../assets/AB+.svg";
-import ABminus from "../assets/AB-.svg";
-import colorfulAblus from "../assets/colorfulA+.svg";
-import colorfulAminus from "../assets/colorfulA-.svg";
+import Logo from "../assets/LOGO.svg";
+import Modal from "../components/Modal.jsx";
+import Oblus from "../assets/O+.svg";
+import Ominus from "../assets/O-.svg";
+import Register2Img from "../assets/Blood donation-amico 2.svg";
+import closeEye from "../assets/closeEye.svg";
 import colorfulABblus from "../assets/colorfulAB+.svg";
 import colorfulABminus from "../assets/colorfulAB-.svg";
-import colorfulOblus from "../assets/colorfulO+.svg";
-import colorfulOminus from "../assets/colorfulO-.svg";
+import colorfulAblus from "../assets/colorfulA+.svg";
+import colorfulAminus from "../assets/colorfulA-.svg";
 import colorfulBblus from "../assets/colorfulB+.svg";
 import colorfulBminus from "../assets/colorfulB-.svg";
-import openEye from "../assets/openEye.svg";
-import closeEye from "../assets/closeEye.svg";
-import Modal from "../components/Modal.jsx";
+import colorfulOblus from "../assets/colorfulO+.svg";
+import colorfulOminus from "../assets/colorfulO-.svg";
 import imageUrl from "../assets/errors.svg";
+import openEye from "../assets/openEye.svg";
+import { registerAsync } from "../store/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Register2 = () => {
   const dispatch = useDispatch();
@@ -282,7 +283,7 @@ const Register2 = () => {
                     <div className="relative">
                       <input
                         type="text"
-                        placeholder={inputFocus["year"] ? "" : "الشهر"}
+                        placeholder={inputFocus["year"] ? "" : "السنه"}
                         name="year"
                         value={userData.year}
                         dir="rtl"

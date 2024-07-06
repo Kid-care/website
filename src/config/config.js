@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://3.129.148.71:3000";
+const API_BASE_URL = "https://kid-care.onrender.com";
 
 const authService = {
   login: async (credentials) => {

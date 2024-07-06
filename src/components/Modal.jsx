@@ -8,7 +8,7 @@ const Modal = ({ closeModal, children, imageUrl, width, height }) => {
         style={{width: width, height: height }}>
         {" "}
         <button
-          className="absolute top-0 right-0 m-7 p-2 text-[30px] text-gray-500 hover:text-gray-800"
+          className="absolute top-0 right-0 m-7 p-2 text-[30px] text-gray-500 hover:text-gray-800 z-50"
           onClick={closeModal}>
           &times;
         </button>
